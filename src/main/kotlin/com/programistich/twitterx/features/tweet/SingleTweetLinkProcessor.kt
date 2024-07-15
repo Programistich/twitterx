@@ -17,12 +17,16 @@ class SingleTweetLinkProcessor(
 
     override suspend fun canProcess(context: TelegramContext): Boolean {
         val update = context.update as? TelegramUpdate.Message ?: return false
-        return getTweetIds(update.message.text).size == 1
+        val text = update.message.text ?: return false
+
+        return getTweetIds(text).size == 1
     }
 
     override suspend fun process(context: TelegramContext) {
         val update = context.update as? TelegramUpdate.Message ?: return
-        val tweetId = getTweetIds(update.message.text).firstOrNull() ?: return
+        val text = update.message.text ?: return
+
+        val tweetId = getTweetIds(text).firstOrNull() ?: return
 
         val tweet = twitterService.getTweet(tweetId)
         kotlin.runCatching {
