@@ -1,0 +1,4 @@
+CREATE TABLE IF NOT EXISTS telegram_chat (
+    id BIGINT PRIMARY KEY NOT NULL,
+    language VARCHAR(255) NOT NULL
+);

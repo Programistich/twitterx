@@ -1,0 +1,74 @@
+[start-command-text]
+en="Hello! I am a bot that can help with Twitter. To get started, please send me a link to the tweet you want to translate."
+ru="Привет! Я бот, который может помочь с Twitter. Чтобы начать, пожалуйста, отправьте мне ссылку на твит, который вы хотите перевести."
+ua="Привіт! Я бот, який може допомогти з Twitter. Щоб почати, будь ласка, надішліть мені посилання на твіт, який ви хочете перекласти."
+
+[language-command-text]
+en="Choose language for translation"
+ru="Выберите язык для перевода"
+ua="Оберіть мову для перекладу"
+
+[language-command-choose-button]
+en="English"
+ru="Русский"
+ua="Українська"
+
+[language-callback-expired]
+en="Sorry, but the time for choosing the language has expired. Please, try again."
+ru="Извините, но время для выбора языка истекло. Пожалуйста, попробуйте еще раз."
+ua="Вибачте, але час для вибору мови вичерпано. Будь ласка, спробуйте ще раз."
+
+[language-callback-success]
+en="You have chosen the language: English"
+ru="Вы выбрали язык: Русский"
+ua="Ви обрали мову: Українська"
+
+[translate_video_command_no_reply]
+en="For translation, please reply to the message with the video"
+ru="Для перевода, пожалуйста, ответьте на cообщение с видео"
+ua="Для перекладу, будь ласка, відповідайте на повідомлення з відео"
+
+[translate_video_command_no_urls]
+en="Sorry, but I can't find any URLs in your message. Please, try again."
+ru="Извините, но я не могу найти никаких URL в вашем сообщении. Пожалуйста, попробуйте еще раз."
+ua="Вибачте, але я не можу знайти жодних URL в вашому повідомленні. Будь ласка, спробуйте ще раз."
+
+[translate_video_command_video_too_big]
+en="Sorry, but the video is too big."
+ru="Извините, но видео слишком большое."
+ua="Вибачте, але відео занадто велике."
+
+[telegram-desc]
+en="Telegram bot for translating tweets"
+ru="Телеграм бот для перевода твитов"
+ua="Телеграм бот для перекладу твітів"
+
+[telegram-short-desc]
+en="Telegram bot for translating tweets"
+ru="Телеграм бот для перевода твитов"
+ua="Телеграм бот для перекладу твітів"
+
+[telegram-name]
+en="Twitter Translate Bot"
+ru="Переводчик твитов"
+ua="Перекладач твітів"
+
+[tweet-private]
+en="Sorry, but the tweet is private."
+ru="Извините, но твит закрытый."
+ua="Вибачте, але твіт приватний."
+
+[tweet-not-found]
+en="Sorry, but the tweet was not found."
+ru="Извините, но твит не найден."
+ua="Вибачте, але твіт не знайдено."
+
+[tweet-api-fail]
+en="Sorry, but an error occurred while processing the tweet."
+ru="Извините, но произошла ошибка при обработке твита."
+ua="Вибачте, але сталася помилка під час обробки твіту."
+
+[tweet-idk]
+en="Sorry, but I don't know how to process this tweet."
+ru="Извините, но я не знаю, как обработать этот твит."
+ua="Вибачте, але я не знаю, як обробити цей твіт."
