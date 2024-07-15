@@ -25,7 +25,12 @@ class SingleTweetLinkProcessor(
         val tweetId = getTweetIds(update.message.text).firstOrNull() ?: return
 
         val tweet = twitterService.getTweet(tweetId)
-        telegramSenderTweet.sendTweet(tweet, context)
+        kotlin.runCatching {
+            telegramSenderTweet.sendTweet(tweet, context)
+        }.onFailure {
+            println("Error while sending tweet: $tweetId $tweet")
+            it.printStackTrace()
+        }
     }
 
     private fun getTweetIds(text: String): List<String> {
