@@ -23,7 +23,7 @@ data class APITweet(
     @SerialName("replying_to_status") val replyingToStatus: String? = null,
     @SerialName("twitter_card") val twitterCard: String? = null,
     @SerialName("author") val author: APIAuthor,
-    @SerialName("source") val source: String,
+    @SerialName("source") val source: String? = null,
     @SerialName("likes") val likes: Int,
     @SerialName("retweets") val retweets: Int,
     @SerialName("replies") val replies: Int,
