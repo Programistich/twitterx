@@ -24,7 +24,7 @@ import org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException
 import java.io.Serializable
 
 @Component
-class TelegramSender(private val telegramConfig: TelegramConfig) {
+class TelegramSender(telegramConfig: TelegramConfig) {
     enum class ChatAction(val value: String) {
         TYPING("typing"),
         UPLOAD_PHOTO("upload_photo"),
@@ -82,8 +82,8 @@ class TelegramSender(private val telegramConfig: TelegramConfig) {
 
     @Throws(TelegramApiException::class, TelegramApiValidationException::class)
     suspend fun sendMedias(
-        chatId: String,
         urls: List<String>,
+        chatId: String,
         text: String,
         customize: SendMediaGroup.() -> Unit = {}
     ): List<Message> {

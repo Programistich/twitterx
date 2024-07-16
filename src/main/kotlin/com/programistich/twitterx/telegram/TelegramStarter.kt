@@ -57,7 +57,7 @@ class TelegramStarter(
             .entries
             .forEach {
                 val description = dictionary.getByLang("telegram-name", it)
-                telegramSender.setMyDescription(description, it.iso)
+                telegramSender.setMyName(description, it.iso)
             }
     }
 }

@@ -1,7 +1,9 @@
 package com.programistich.twitterx.twitter.api
 
-class PrivateTweetException : Exception("This tweet is private")
+open class TweetException(override val message: String) : Exception(message)
 
-class NotFoundTweetException : Exception("Tweet not found")
+class PrivateTweetException : TweetException("This tweet is private")
 
-class ApiFailTweetException : Exception("API failure")
+class NotFoundTweetException : TweetException("Tweet not found")
+
+class ApiFailTweetException : TweetException("API failure")
