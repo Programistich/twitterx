@@ -7,5 +7,7 @@ import kotlinx.serialization.Serializable
 @Serializable
 data class LanguageCommandCallback(
     @SerialName("chat_language")
-    val language: ChatLanguage
+    val language: ChatLanguage,
+    @SerialName("message_id")
+    val messageId: Int
 )

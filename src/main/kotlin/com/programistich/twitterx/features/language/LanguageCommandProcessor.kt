@@ -5,6 +5,7 @@ import com.programistich.twitterx.features.dictionary.Dictionary
 import com.programistich.twitterx.telegram.TelegramSender
 import com.programistich.twitterx.telegram.models.TelegramCommand
 import com.programistich.twitterx.telegram.models.TelegramContext
+import com.programistich.twitterx.telegram.models.TelegramUpdate
 import com.programistich.twitterx.telegram.processor.CommandProcessor
 import kotlinx.serialization.json.Json
 import org.springframework.stereotype.Component
@@ -21,12 +22,15 @@ class LanguageCommandProcessor(
         get() = TelegramCommand.LANG
 
     override suspend fun process(context: TelegramContext) {
+        val update = context.update as? TelegramUpdate.Message ?: return
+        val messageId = update.message.messageId ?: return
+
         val chat = context.chat ?: return
         val text = getTextMessage()
 
         val keyboardMarkup = ChatLanguage
             .entries
-            .map { getLanguageButton(it) }
+            .map { getLanguageButton(it, messageId) }
             .map { InlineKeyboardRow(it) }
             .let { InlineKeyboardMarkup(it) }
 
@@ -46,10 +50,13 @@ class LanguageCommandProcessor(
             }
     }
 
-    private fun getLanguageButton(lang: ChatLanguage): InlineKeyboardButton {
+    private fun getLanguageButton(
+        lang: ChatLanguage,
+        messageId: Int
+    ): InlineKeyboardButton {
         val callback = Json.encodeToString(
             serializer = LanguageCommandCallback.serializer(),
-            value = LanguageCommandCallback(lang)
+            value = LanguageCommandCallback(lang, messageId)
         )
         val textButton = dictionary.getByLang(
             table = "language-command-choose-button",

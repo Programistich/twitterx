@@ -14,6 +14,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
+import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
@@ -154,6 +155,15 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         customize: SetMyName.() -> Unit = {}
     ): Boolean {
         val method = SetMyName(name, languageCode).apply(customize).also { it.validate() }
+        return telegramClient.executeAsync(method).await()
+    }
+
+    @Throws(TelegramApiException::class, TelegramApiValidationException::class)
+    suspend fun deleteMessage(
+        chatId: String,
+        messageId: Int
+    ): Boolean {
+        val method = DeleteMessage(chatId, messageId).also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 }

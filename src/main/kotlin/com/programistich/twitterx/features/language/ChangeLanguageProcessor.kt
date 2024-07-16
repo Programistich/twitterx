@@ -26,12 +26,13 @@ class ChangeLanguageProcessor(
     override suspend fun process(context: TelegramContext) {
         val update = context.update as? TelegramUpdate.CallbackQuery ?: return
         val chat = context.chat ?: return
-        val changedLanguage = getCallbackData(update).language
+
+        val query = getCallbackData(update)
 
         val editText = if (isCallBackExpired(update)) {
             dictionary.getByLang("language-callback-expired", chat.language)
         } else {
-            chat.language = changedLanguage
+            chat.language = query.language
             withContext(Dispatchers.IO) { chatRepository.save(chat) }
             dictionary.getByLang("language-callback-success", chat.language)
         }
@@ -41,6 +42,8 @@ class ChangeLanguageProcessor(
             chatId = chat.idStr(),
             messageId = update.callbackQuery.message.messageId
         )
+
+        telegramSender.deleteMessage(chat.idStr(), query.messageId)
     }
 
     private fun isCallBackExpired(update: TelegramUpdate.CallbackQuery): Boolean {
