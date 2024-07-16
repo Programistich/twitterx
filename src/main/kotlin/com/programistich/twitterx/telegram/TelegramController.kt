@@ -13,6 +13,7 @@ import kotlinx.coroutines.channels.Channel
 import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.longpolling.interfaces.LongPollingUpdateConsumer
 import org.telegram.telegrambots.longpolling.starter.SpringLongPollingBot
@@ -28,6 +29,8 @@ class TelegramController(
 ) : SpringLongPollingBot, LongPollingUpdateConsumer {
     private val channels = ConcurrentHashMap<Long, Channel<TelegramUpdate>>()
     private val scope = CoroutineScope(Dispatchers.Default + SupervisorJob())
+
+    private val logger = LoggerFactory.getLogger(this::class.java)
 
     override fun getBotToken(): String = telegramConfig.botToken
 
@@ -62,10 +65,14 @@ class TelegramController(
         val command = telegramUpdate.getCommand(telegramConfig.botUsername)
         val context = TelegramContext(telegramUpdate, telegramConfig, command, chat)
 
-        telegramProcessors
-            .filter { it.canProcess(context) }
-            .maxByOrNull { it.priority.value }
-            ?.process(context)
+        kotlin.runCatching {
+            telegramProcessors
+                .filter { it.canProcess(context) }
+                .maxByOrNull { it.priority.value }
+                ?.process(context)
+        }.onFailure {
+            logger.error("Error processing update: $telegramUpdate", it)
+        }
     }
 
     private suspend fun getOrCreateChat(

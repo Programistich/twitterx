@@ -5,6 +5,7 @@ import com.programistich.twitterx.telegram.TelegramSender
 import com.programistich.twitterx.telegram.models.TelegramContext
 import com.programistich.twitterx.telegram.models.TelegramUpdate
 import com.programistich.twitterx.twitter.api.ApiFailTweetException
+import com.programistich.twitterx.twitter.api.LongTweetException
 import com.programistich.twitterx.twitter.api.NotFoundTweetException
 import com.programistich.twitterx.twitter.api.PrivateTweetException
 import com.programistich.twitterx.twitter.api.TweetException
@@ -32,6 +33,7 @@ class TwitterErrorSender(
             is ApiFailTweetException -> "tweet-api-fail"
             is TelegramApiValidationException -> "tweet-telegram-validate-error"
             is TelegramApiException -> "tweet-telegram-error"
+            is LongTweetException -> "tweet-long-error"
             else -> "tweet-unknown-error"
         }
         val translatedExceptionText = dictionary.getByLang(exceptionText, chat.language)

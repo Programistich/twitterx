@@ -92,3 +92,8 @@ ua="Вибачте, але сталася невідома помилка."
 en="You can see tweet in Instant View: {}"
 ru="Вы можете посмотреть твит в Instant View: {}"
 ua="Ви можете переглянути твіт в Instant View: {}"
+
+[tweet-long-error]
+en="Sorry, but the tweet is too long."
+ru="Извините, но твит слишком длинный."
+ua="Вибачте, але твіт занадто довгий."
