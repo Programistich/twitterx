@@ -10,6 +10,7 @@ fun Update.toTelegramUpdate(): TelegramUpdate? {
     return when {
         this.hasMessage() -> TelegramUpdate.Message(this.message)
         this.hasCallbackQuery() -> TelegramUpdate.CallbackQuery(this.callbackQuery)
+        this.hasInlineQuery() -> TelegramUpdate.InlineQuery(this.inlineQuery)
         else -> null
     }
 }

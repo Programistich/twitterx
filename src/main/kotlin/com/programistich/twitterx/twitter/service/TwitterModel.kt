@@ -12,9 +12,9 @@ data class Tweet(
 sealed class TweetContent {
     data object Text : TweetContent()
     data class Photo(val url: String) : TweetContent()
-    data class Video(val url: String) : TweetContent()
+    data class Video(val url: String, val thumbnailUrl: String) : TweetContent()
     data class Poll(val options: List<String>) : TweetContent()
-    data class ManyMedia(val urls: List<String>) : TweetContent()
+    data class ManyMedia(val urls: List<String>, val mosaic: String?) : TweetContent()
 }
 
 data class Author(

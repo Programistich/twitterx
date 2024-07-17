@@ -4,6 +4,7 @@ import com.programistich.twitterx.telegram.TelegramSender
 import com.programistich.twitterx.telegram.models.TelegramContext
 import com.programistich.twitterx.telegram.models.TelegramUpdate
 import com.programistich.twitterx.telegram.processor.TelegramProcessor
+import com.programistich.twitterx.twitter.getTweetIds
 import com.programistich.twitterx.twitter.service.TwitterService
 import com.programistich.twitterx.twitter.telegram.TwitterErrorSender
 import com.programistich.twitterx.twitter.telegram.TwitterSuccessSender
@@ -18,7 +19,6 @@ class SingleTweetLinkProcessor(
     private val telegramSender: TelegramSender
 ) : TelegramProcessor {
     companion object {
-        private const val TWEET_REGEX = "https://(?:mobile.)?(?:twitter.com|x.com)/([a-zA-Z0-9_]+)/status/([0-9]+)?(.*)"
     }
 
     private val logger = LoggerFactory.getLogger(this::class.java)
@@ -28,19 +28,19 @@ class SingleTweetLinkProcessor(
 
     override suspend fun canProcess(context: TelegramContext): Boolean {
         val update = context.update as? TelegramUpdate.Message ?: return false
-        val text = update.message.text ?: return false
-        return getTweetIds(text).size == 1
+        val text = update.message.text?.trim() ?: return false
+        return text.getTweetIds().size == 1
     }
 
     override suspend fun process(context: TelegramContext) {
         val update = context.update as? TelegramUpdate.Message ?: return
-        val text = update.message.text ?: return
+        val text = update.message.text?.trim() ?: return
 
         val chat = context.chat ?: return
         val chatId = chat.idStr()
         telegramSender.sendAction(chatId, TelegramSender.ChatAction.TYPING)
 
-        val tweetId = getTweetIds(text).firstOrNull() ?: return
+        val tweetId = text.getTweetIds().firstOrNull() ?: return
 
         twitterService
             .getTweet(tweetId)
@@ -51,9 +51,5 @@ class SingleTweetLinkProcessor(
                 logger.error("Failed to send tweet", exception)
                 twitterErrorSender.sendError(context, exception, tweetId)
             }
-    }
-
-    private fun getTweetIds(text: String): List<String> {
-        return TWEET_REGEX.toRegex().findAll(text).map { it.groupValues[2] }.toList()
     }
 }

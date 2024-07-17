@@ -1,7 +1,7 @@
 package com.programistich.twitterx.twitter.telegram
 
 import com.programistich.twitterx.entities.ChatLanguage
-import com.programistich.twitterx.features.telegraph.TelegraphService
+import com.programistich.twitterx.features.dictionary.Dictionary
 import com.programistich.twitterx.features.translate.TranslateService
 import com.programistich.twitterx.telegram.TelegramSender
 import com.programistich.twitterx.telegram.models.TelegramContext
@@ -11,12 +11,13 @@ import com.programistich.twitterx.twitter.service.Tweet
 import com.programistich.twitterx.twitter.service.TweetContent
 import kotlinx.coroutines.delay
 import org.springframework.stereotype.Component
+import org.telegram.telegrambots.meta.api.objects.User
 
 @Component
 class TwitterSuccessSender(
     private val telegramSender: TelegramSender,
     private val translateService: TranslateService,
-    private val telegraphService: TelegraphService
+    private val dictionary: Dictionary
 ) {
     companion object {
         private const val WAIT_ACTION_TIME = 2000L
@@ -33,10 +34,13 @@ class TwitterSuccessSender(
         val messageId = update.message.messageId
 
         val translate = getTranslatedText(chat.language, tweet)
-        val contentText = getText(translate, tweet)
+        val header = getHeaderText(chat.language, tweet, update.message.from)
+        val text = "${header}\n\n$translate"
+
+        val contentText = getText(text, tweet)
 
         sendAction(chatId, tweet.content)
-        when (tweet.content) {
+        val id = when (tweet.content) {
             is TweetContent.ManyMedia -> {
                 telegramSender.sendMedias(
                     urls = tweet.content.urls,
@@ -44,7 +48,7 @@ class TwitterSuccessSender(
                     text = contentText
                 ) {
                     replyToMessageId = messageId
-                }
+                }.first().messageId
             }
             is TweetContent.Photo -> {
                 telegramSender.sendPhoto(
@@ -53,16 +57,22 @@ class TwitterSuccessSender(
                 ) {
                     caption = contentText
                     replyToMessageId = messageId
-                }
+                }.messageId
             }
             is TweetContent.Poll -> {
                 telegramSender.sendPoll(
                     chatId = chat.idStr(),
-                    text = contentText,
+                    text = "",
                     options = tweet.content.options
                 ) {
                     replyToMessageId = messageId
                 }
+                telegramSender.sendText(
+                    chatId = chat.idStr(),
+                    text = contentText,
+                ) {
+                    replyToMessageId = messageId
+                }.messageId
             }
             TweetContent.Text -> {
                 telegramSender.sendText(
@@ -70,7 +80,7 @@ class TwitterSuccessSender(
                     chatId = chat.idStr()
                 ) {
                     replyToMessageId = messageId
-                }
+                }.messageId
             }
             is TweetContent.Video -> {
                 telegramSender.sendVideo(
@@ -79,8 +89,11 @@ class TwitterSuccessSender(
                 ) {
                     caption = contentText
                     replyToMessageId = messageId
-                }
+                }.messageId
             }
+        }
+        kotlin.runCatching {
+            telegramSender.deleteMessage(chatId, messageId)
         }
     }
 
@@ -116,15 +129,32 @@ class TwitterSuccessSender(
         tweet: Tweet,
     ): String {
         val limit = getLimit(tweet.content)
-        if (translatedText.length <= limit) return translatedText
-        else throw LongTweetException()
+        if (translatedText.length <= limit) {
+            return translatedText
+        } else {
+            throw LongTweetException()
+        }
+    }
+
+    private fun getHeaderText(
+        lang: ChatLanguage,
+        tweet: Tweet,
+        from: User
+    ): String {
+        return dictionary.getByLang(
+            table = "tweet-from-header",
+            language = lang,
+            tweet.url,
+            "<a href=\"${tweet.author.url}\">${tweet.author.username}</a>",
+            from.firstName
+        )
     }
 
     private fun getLimit(content: TweetContent): Int {
         return when (content) {
             is TweetContent.ManyMedia -> 1024
             is TweetContent.Photo -> 1024
-            is TweetContent.Poll -> 300
+            is TweetContent.Poll -> 4096
             TweetContent.Text -> 4096
             is TweetContent.Video -> 1024
         }

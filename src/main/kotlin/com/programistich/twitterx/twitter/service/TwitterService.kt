@@ -30,12 +30,12 @@ class TwitterService(private val twitterApi: TwitterApi) {
                 TweetContent.Photo(apiTweet.media.photos[0].url)
             }
             apiTweet.media.photos == null && apiTweet.media.videos?.size == 1 -> {
-                TweetContent.Video(apiTweet.media.videos[0].url)
+                TweetContent.Video(apiTweet.media.videos[0].url, apiTweet.media.videos[0].thumbnailUrl)
             }
             else -> {
                 val photoUrls = apiTweet.media.photos?.map { it.url } ?: emptyList()
                 val videoUrls = apiTweet.media.videos?.map { it.url } ?: emptyList()
-                TweetContent.ManyMedia(photoUrls + videoUrls)
+                TweetContent.ManyMedia(photoUrls + videoUrls, apiTweet.media.mosaic?.formats?.jpeg)
             }
         }
     }

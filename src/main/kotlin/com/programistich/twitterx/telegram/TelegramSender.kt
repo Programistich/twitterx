@@ -4,6 +4,8 @@ import com.programistich.twitterx.telegram.models.TelegramConfig
 import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
+import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery
+import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
 import org.telegram.telegrambots.meta.api.methods.description.SetMyDescription
 import org.telegram.telegrambots.meta.api.methods.description.SetMyShortDescription
@@ -18,6 +20,7 @@ import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
+import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
@@ -40,7 +43,10 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         chatId: String,
         customize: SendMessage.() -> Unit = {}
     ): Message {
-        val method = SendMessage(chatId, text).apply(customize).also { it.validate() }
+        val method = SendMessage(chatId, text)
+            .apply(customize)
+            .apply { parseMode = ParseMode.HTML }
+            .also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 
@@ -54,7 +60,10 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         val method = EditMessageText(text).apply {
             this.chatId = chatId
             this.messageId = messageId
-        }.apply(customize).also { it.validate() }
+        }
+            .apply(customize)
+            .apply { parseMode = ParseMode.HTML }
+            .also { it.validate() }
 
         return telegramClient.executeAsync(method).await()
     }
@@ -66,7 +75,10 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         customize: SendPhoto.() -> Unit = {}
     ): Message {
         val inputFile = InputFile(imageUrl)
-        val method = SendPhoto(chatId, inputFile).apply(customize).also { it.validate() }
+        val method = SendPhoto(chatId, inputFile)
+            .apply(customize)
+            .apply { parseMode = ParseMode.HTML }
+            .also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 
@@ -77,7 +89,10 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         customize: SendVideo.() -> Unit = {}
     ): Message {
         val inputFile = InputFile(videoUrl)
-        val method = SendVideo(chatId, inputFile).apply(customize).also { it.validate() }
+        val method = SendVideo(chatId, inputFile)
+            .apply(customize)
+            .apply { parseMode = ParseMode.HTML }
+            .also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 
@@ -86,11 +101,15 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         urls: List<String>,
         chatId: String,
         text: String,
+        parseMode: String = ParseMode.HTML,
         customize: SendMediaGroup.() -> Unit = {}
     ): List<Message> {
         val medias = urls.mapIndexed { index, url ->
             val media = InputMediaPhoto(url)
-            if (index == 0) media.caption = text
+            if (index == 0) {
+                media.caption = text
+                media.parseMode = parseMode
+            }
             media
         }
 
@@ -105,7 +124,9 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         options: List<String>,
         customize: SendPoll.() -> Unit = {}
     ): Message {
-        val method = SendPoll(chatId, text, options).apply(customize).also { it.validate() }
+        val method = SendPoll(chatId, text, options)
+            .apply(customize)
+            .also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 
@@ -164,6 +185,16 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         messageId: Int
     ): Boolean {
         val method = DeleteMessage(chatId, messageId).also { it.validate() }
+        return telegramClient.executeAsync(method).await()
+    }
+
+    @Throws(TelegramApiException::class, TelegramApiValidationException::class)
+    suspend fun sendInlineQuery(
+        id: String,
+        results: List<InlineQueryResult>,
+        customize: AnswerInlineQuery.() -> Unit = {}
+    ): Boolean {
+        val method = AnswerInlineQuery(id, results).apply(customize).also { it.validate() }
         return telegramClient.executeAsync(method).await()
     }
 }
