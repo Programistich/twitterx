@@ -5,6 +5,7 @@ import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
 import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery
+import org.telegram.telegrambots.meta.api.methods.GetFile
 import org.telegram.telegrambots.meta.api.methods.ParseMode
 import org.telegram.telegrambots.meta.api.methods.commands.SetMyCommands
 import org.telegram.telegrambots.meta.api.methods.description.SetMyDescription
@@ -18,6 +19,7 @@ import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
+import org.telegram.telegrambots.meta.api.objects.File
 import org.telegram.telegrambots.meta.api.objects.InputFile
 import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult
@@ -89,6 +91,20 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         customize: SendVideo.() -> Unit = {}
     ): Message {
         val inputFile = InputFile(videoUrl)
+        val method = SendVideo(chatId, inputFile)
+            .apply(customize)
+            .apply { parseMode = ParseMode.HTML }
+            .also { it.validate() }
+        return telegramClient.executeAsync(method).await()
+    }
+
+    @Throws(TelegramApiException::class, TelegramApiValidationException::class)
+    suspend fun sendVideo(
+        video: java.io.File,
+        chatId: String,
+        customize: SendVideo.() -> Unit = {}
+    ): Message {
+        val inputFile = InputFile(video)
         val method = SendVideo(chatId, inputFile)
             .apply(customize)
             .apply { parseMode = ParseMode.HTML }
@@ -196,5 +212,14 @@ class TelegramSender(telegramConfig: TelegramConfig) {
     ): Boolean {
         val method = AnswerInlineQuery(id, results).apply(customize).also { it.validate() }
         return telegramClient.executeAsync(method).await()
+    }
+
+    suspend fun getFile(fileId: String): File {
+        val method = GetFile(fileId)
+        return telegramClient.executeAsync(method).await()
+    }
+
+    fun downloadFile(filePath: String?): java.io.File {
+        return telegramClient.downloadFile(filePath)
     }
 }

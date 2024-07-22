@@ -48,6 +48,7 @@ class TwitterSuccessSender(
                     text = contentText
                 ) {
                     replyToMessageId = messageId
+                    disableNotification()
                 }.first().messageId
             }
             is TweetContent.Photo -> {
@@ -57,6 +58,7 @@ class TwitterSuccessSender(
                 ) {
                     caption = contentText
                     replyToMessageId = messageId
+                    disableNotification()
                 }.messageId
             }
             is TweetContent.Poll -> {
@@ -66,12 +68,14 @@ class TwitterSuccessSender(
                     options = tweet.content.options
                 ) {
                     replyToMessageId = messageId
+                    disableNotification()
                 }
                 telegramSender.sendText(
                     chatId = chat.idStr(),
                     text = contentText,
                 ) {
                     replyToMessageId = messageId
+                    disableNotification()
                 }.messageId
             }
             TweetContent.Text -> {
@@ -80,6 +84,8 @@ class TwitterSuccessSender(
                     chatId = chat.idStr()
                 ) {
                     replyToMessageId = messageId
+                    disableWebPagePreview = true
+                    disableNotification()
                 }.messageId
             }
             is TweetContent.Video -> {
@@ -89,6 +95,7 @@ class TwitterSuccessSender(
                 ) {
                     caption = contentText
                     replyToMessageId = messageId
+                    disableNotification()
                 }.messageId
             }
         }

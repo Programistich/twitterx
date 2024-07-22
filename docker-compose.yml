@@ -33,6 +33,7 @@ services:
       - POSTGRES_USER
       - POSTGRES_PASSWORD
       - DEEPL_API_KEY
+      - YT_DLP_PATH = /usr/local/bin/yt-dlp
     depends_on:
       - twitter-db
 

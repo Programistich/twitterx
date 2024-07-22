@@ -102,3 +102,13 @@ ua="Вибачте, але твіт занадто довгий."
 en="<a href=\"{}\">Tweet</a> from {} by {}"
 ru="<a href=\"{}\">Твит</a> от {} by {}"
 ua="<a href=\"{}\">Твіт</a> від {} by {}"
+
+[yt-dlp-cookies-expired]
+en="Please ping author for update cookies"
+ru="Пожалуйста, пинганите автора для обновления куков"
+ua="Будь ласка, пінгуйте автора для оновлення куків"
+
+[yt-dlp-rate-limit]
+en="Rate limit exceeded. Please try again later."
+ru="Превышен лимит запросов. Пожалуйста, попробуйте позже."
+ua="Перевищено ліміт запитів. Будь ласка, спробуйте пізніше."

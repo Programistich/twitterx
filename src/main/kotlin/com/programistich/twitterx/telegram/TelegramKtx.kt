@@ -30,3 +30,10 @@ fun Message.getCommand(botName: String): TelegramCommand? {
         else -> null
     }
 }
+
+fun Message.getUrls(): List<String> {
+    val entities = this.entities ?: return emptyList()
+    return entities
+        .filter { it.type == EntityType.URL }
+        .map { this.text.substring(it.offset, it.offset + it.length) }
+}
