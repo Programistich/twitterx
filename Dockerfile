@@ -1,4 +1,4 @@
-FROM gradle:8.7.0-jdk17-alpine
+FROM gradle:8.7.0-jdk17-slim
 
 RUN apt update && apt install -y curl python3
 ADD "https://api.github.com/repos/yt-dlp/yt-dlp/releases?per_page=1" latest_release
