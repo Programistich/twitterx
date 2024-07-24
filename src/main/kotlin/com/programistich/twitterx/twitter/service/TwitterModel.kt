@@ -18,7 +18,8 @@ sealed class TweetContent {
 }
 
 data class Author(
-    val username: String
+    val username: String,
+    val name: String
 ) {
     val url by lazy { "https://x.com/$username" }
 }

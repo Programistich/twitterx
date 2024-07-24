@@ -1,12 +1,12 @@
-package com.programistich.twitterx.twitter.telegram
+package com.programistich.twitterx.features.tweet
 
 import com.programistich.twitterx.entities.ChatLanguage
 import com.programistich.twitterx.features.dictionary.Dictionary
+import com.programistich.twitterx.features.telegraph.TelegraphService
 import com.programistich.twitterx.features.translate.TranslateService
 import com.programistich.twitterx.telegram.TelegramSender
 import com.programistich.twitterx.telegram.models.TelegramContext
 import com.programistich.twitterx.telegram.models.TelegramUpdate
-import com.programistich.twitterx.twitter.api.LongTweetException
 import com.programistich.twitterx.twitter.service.Tweet
 import com.programistich.twitterx.twitter.service.TweetContent
 import kotlinx.coroutines.delay
@@ -17,7 +17,8 @@ import org.telegram.telegrambots.meta.api.objects.User
 class TwitterSuccessSender(
     private val telegramSender: TelegramSender,
     private val translateService: TranslateService,
-    private val dictionary: Dictionary
+    private val dictionary: Dictionary,
+    private val telegraphService: TelegraphService
 ) {
     companion object {
         private const val WAIT_ACTION_TIME = 2000L
@@ -35,9 +36,7 @@ class TwitterSuccessSender(
 
         val translate = getTranslatedText(chat.language, tweet)
         val header = getHeaderText(chat.language, tweet, update.message.from)
-        val text = "${header}\n\n$translate"
-
-        val contentText = getText(text, tweet)
+        val contentText = getText(translatedText = translate, headerText = header, tweet = tweet)
 
         sendAction(chatId, tweet.content)
         val id = when (tweet.content) {
@@ -133,14 +132,18 @@ class TwitterSuccessSender(
 
     private suspend fun getText(
         translatedText: String,
+        headerText: String,
         tweet: Tweet,
     ): String {
-        val limit = getLimit(tweet.content)
-        if (translatedText.length <= limit) {
-            return translatedText
+        val fullText = "$headerText\n\n$translatedText"
+
+        val contentText = if (fullText.length <= getLimit(tweet.content)) {
+            translatedText
         } else {
-            throw LongTweetException()
+            telegraphService.getPageUrl(translatedText, tweet)
         }
+
+        return "$headerText\n\n$contentText"
     }
 
     private fun getHeaderText(

@@ -6,8 +6,6 @@ import com.programistich.twitterx.telegram.models.TelegramUpdate
 import com.programistich.twitterx.telegram.processor.TelegramProcessor
 import com.programistich.twitterx.twitter.getTweetIds
 import com.programistich.twitterx.twitter.service.TwitterService
-import com.programistich.twitterx.twitter.telegram.TwitterErrorSender
-import com.programistich.twitterx.twitter.telegram.TwitterSuccessSender
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 
@@ -18,9 +16,6 @@ class SingleTweetLinkProcessor(
     private val twitterErrorSender: TwitterErrorSender,
     private val telegramSender: TelegramSender
 ) : TelegramProcessor {
-    companion object {
-    }
-
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override val priority: TelegramProcessor.Priority

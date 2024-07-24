@@ -13,7 +13,7 @@ class TwitterService(private val twitterApi: TwitterApi) {
     private fun convert(apiTweet: APITweet): Tweet {
         val apiAuthor = apiTweet.author
 
-        val author = Author(username = apiAuthor.screenName)
+        val author = Author(username = apiAuthor.screenName, name = apiAuthor.name)
         return Tweet(
             id = apiTweet.id,
             text = apiTweet.text,
