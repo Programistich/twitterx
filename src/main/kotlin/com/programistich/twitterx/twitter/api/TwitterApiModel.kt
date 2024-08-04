@@ -56,8 +56,7 @@ data class APIExternalMedia(
     @SerialName("type") val type: String,
     @SerialName("url") val url: String,
     @SerialName("height") val height: Int,
-    @SerialName("width") val width: Int,
-    @SerialName("duration") val duration: Int
+    @SerialName("width") val width: Int
 )
 
 @Serializable
