@@ -46,7 +46,6 @@ class TwitterSuccessSender(
                     chatId = chatId,
                     text = contentText
                 ) {
-                    replyToMessageId = messageId
                     disableNotification()
                 }.first().messageId
             }
@@ -56,7 +55,6 @@ class TwitterSuccessSender(
                     chatId = chatId
                 ) {
                     caption = contentText
-                    replyToMessageId = messageId
                     disableNotification()
                 }.messageId
             }
@@ -66,14 +64,12 @@ class TwitterSuccessSender(
                     text = "",
                     options = tweet.content.options
                 ) {
-                    replyToMessageId = messageId
                     disableNotification()
                 }
                 telegramSender.sendText(
                     chatId = chat.idStr(),
                     text = contentText,
                 ) {
-                    replyToMessageId = messageId
                     disableNotification()
                 }.messageId
             }
@@ -82,7 +78,6 @@ class TwitterSuccessSender(
                     text = contentText,
                     chatId = chat.idStr()
                 ) {
-                    replyToMessageId = messageId
                     disableWebPagePreview = true
                     disableNotification()
                 }.messageId
@@ -93,7 +88,6 @@ class TwitterSuccessSender(
                     chatId = chat.idStr()
                 ) {
                     caption = contentText
-                    replyToMessageId = messageId
                     disableNotification()
                 }.messageId
             }

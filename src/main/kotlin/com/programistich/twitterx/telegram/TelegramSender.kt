@@ -25,6 +25,7 @@ import org.telegram.telegrambots.meta.api.objects.commands.BotCommand
 import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResult
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.api.objects.message.Message
+import org.telegram.telegrambots.meta.api.objects.polls.input.InputPollOption
 import org.telegram.telegrambots.meta.exceptions.TelegramApiException
 import org.telegram.telegrambots.meta.exceptions.TelegramApiValidationException
 import java.io.Serializable
@@ -140,6 +141,7 @@ class TelegramSender(telegramConfig: TelegramConfig) {
         options: List<String>,
         customize: SendPoll.() -> Unit = {}
     ): Message {
+        val options = options.map { InputPollOption(it) }
         val method = SendPoll(chatId, text, options)
             .apply(customize)
             .also { it.validate() }
