@@ -1,6 +1,5 @@
 package com.programistich.twitterx.features.ytdlp
 
-import com.programistich.twitterx.features.cookies.CookiesFacade
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
@@ -8,14 +7,11 @@ import kotlinx.coroutines.launch
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.stereotype.Component
 import java.io.File
-import java.util.*
+import java.util.UUID
 import java.util.logging.Logger
 
 @Component
-class YtDlpFacade(
-    private val cookiesFacade: CookiesFacade,
-    @Value("\${yt-dlp.path}") private val ytDlpPath: String
-) {
+class YtDlpFacade(@Value("\${yt-dlp.path}") private val ytDlpPath: String) {
     private val logger = Logger.getLogger(this::class.java.name)
     private val deleteScope = CoroutineScope(Dispatchers.IO)
     private val videoFolder = File("video").apply {
@@ -30,27 +26,17 @@ class YtDlpFacade(
         val filename = UUID.randomUUID().toString()
         val videoFile = File(downloadFolder, "$filename.mp4")
 
-        val cookiesFile = cookiesFacade.getCookiesFile()
         val commands = listOf(
             ytDlpPath,
             "-v",
             url,
             "-o",
-            videoFile.absolutePath,
-            "--cookies",
-            cookiesFile.absolutePath
+            videoFile.absolutePath
         )
         logger.info("Running yt-dlp with command: ${commands.joinToString(" ")}")
 
         val process = ProcessBuilder(commands).start().apply { waitFor() }
         val result = String(process.errorStream.readAllBytes())
-
-        if (result.contains("Requested content is not available, rate-limit reached or login required.")) {
-            throw RateLimitException()
-        }
-        if (result.contains("401: Unauthorized")) {
-            throw UnAuthorizedException()
-        }
 
         logger.info("yt-dlp result: $result")
         logger.info("Finished downloading video from $url")

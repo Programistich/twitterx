@@ -1,27 +1,38 @@
 [start-command-text]
-en="Hello! I am a bot that can help with Twitter. To get started, please send me a link to the tweet you want to translate."
-ru="Привет! Я бот, который может помочь с Twitter. Чтобы начать, пожалуйста, отправьте мне ссылку на твит, который вы хотите перевести."
-ua="Привіт! Я бот, який може допомогти з Twitter. Щоб почати, будь ласка, надішліть мені посилання на твіт, який ви хочете перекласти."
+en="Hello! I am a bot that can help with Twitter/TikTok. To get started, please send me a link you want to see."
+ru="Привет! Я бот, который может помочь с Twitter/TikTok. Чтобы начать, пожалуйста, отправьте мне ссылку, который вы хотите увидеть."
+ua="Привіт! Я бот, який може допомогти з Twitter/TikTok. Щоб почати, будь ласка, надішліть мені посилання, який ви хочете побачити."
 
 [language-command-text]
 en="Choose language for translation"
 ru="Выберите язык для перевода"
 ua="Оберіть мову для перекладу"
 
-[language-command-choose-button]
+[language-command-button]
 en="English"
 ru="Русский"
 ua="Українська"
+
+[language-changed-text]
+en="{} chose the chat language: English"
+ru="{} выбрал выбрали язык чата: Русский"
+ua="{} обрав мову чату: Українська"
+
+[tweet-fixupx]
+en="Something wrong, but uou can see tweet in Instant View: {}"
+ru="Что-то пошло не так, но вы можете посмотреть твит в Instant View: {}"
+ua="Щось пішло не так, але ви можете подивитися твіт в Instant View: {}"
+
+[tweet-header]
+en="<a href=\"{}\">Tweet</a> from {} by {}"
+ru="<a href=\"{}\">Твит</a> от {} by {}"
+ua="<a href=\"{}\">Твіт</a> від {} by {}"
 
 [language-callback-expired]
 en="Sorry, but the time for choosing the language has expired. Please, try again."
 ru="Извините, но время для выбора языка истекло. Пожалуйста, попробуйте еще раз."
 ua="Вибачте, але час для вибору мови вичерпано. Будь ласка, спробуйте ще раз."
 
-[language-callback-success]
-en="You have chosen the chat language: English"
-ru="Вы выбрали язык чата: Русский"
-ua="Ви обрали мову чату: Українська"
 
 [translate_video_command_no_reply]
 en="For translation, please reply to the message with the video"
@@ -88,20 +99,10 @@ en="Sorry, but an unknown error occurred."
 ru="Извините, но произошла неизвестная ошибка."
 ua="Вибачте, але сталася невідома помилка."
 
-[tweet-fixupx]
-en="You can see tweet in Instant View: {}"
-ru="Вы можете посмотреть твит в Instant View: {}"
-ua="Ви можете переглянути твіт в Instant View: {}"
-
 [tweet-long-error]
 en="Sorry, but the tweet is too long."
 ru="Извините, но твит слишком длинный."
 ua="Вибачте, але твіт занадто довгий."
-
-[tweet-from-header]
-en="<a href=\"{}\">Tweet</a> from {} by {}"
-ru="<a href=\"{}\">Твит</a> от {} by {}"
-ua="<a href=\"{}\">Твіт</a> від {} by {}"
 
 [yt-dlp-cookies-expired]
 en="Please ping author for update cookies"

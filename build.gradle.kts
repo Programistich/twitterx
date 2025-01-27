@@ -26,14 +26,15 @@ dependencies {
     implementation("org.springframework.boot:spring-boot-starter-web")
 
     // Database
-    runtimeOnly("org.postgresql:postgresql")
-    implementation("org.flywaydb:flyway-core")
+    runtimeOnly("org.postgresql:postgresql:42.7.5")
+    runtimeOnly("org.flywaydb:flyway-database-postgresql:11.2.0")
 
     // Kotlin
+    implementation("org.jetbrains.kotlin:kotlin-reflect")
     implementation("org.jetbrains.kotlinx:kotlinx-coroutines-core:1.10.1")
     implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
-    implementation("com.deepl.api:deepl-java:1.5.0")
+    implementation("commons-codec:commons-codec:1.17.2")
 
     // Ktor client
     val version = "3.0.3"
