@@ -8,15 +8,19 @@ import kotlinx.coroutines.future.await
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
+import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup
+import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
 import org.telegram.telegrambots.meta.api.methods.send.SendVideo
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
 @Component
 class DownloaderYtDlpProcessor(
     private val ytDlpFacade: YtDlpFacade,
     private val instagramBuilderURL: InstagramBuilderURL,
-    private val telegramClient: TelegramClient
+    private val telegramClient: TelegramClient,
+    private val tikTokApi: TikTokApi
 ) : Executor<TelegramMessageUpdate> {
     private val logger = LoggerFactory.getLogger(javaClass::class.java)
 
@@ -48,17 +52,49 @@ class DownloaderYtDlpProcessor(
             telegramClient.executeAsync(sendAction).await()
         }
 
-        val url = if (isIG(url)) instagramBuilderURL.downloadIG(url) else url
-
         try {
-            val file = ytDlpFacade.download(url)
-
-            val inputFile = InputFile(file)
-            val sendVideo = SendVideo(chat.idStr(), inputFile)
-
-            telegramClient.executeAsync(sendVideo).await()
+            when {
+                isTikTok(url) -> sendTikTok(url, chat, messageId)
+                isIG(url) -> sendInstagram(url, chat, messageId)
+                else -> {}
+            }
         } catch (e: Exception) {
             logger.error("Failed to download video from $url", e)
+        }
+    }
+
+    private suspend fun sendInstagram(url: String, chat: TelegramChat, messageId: Int) {
+        val url = instagramBuilderURL.downloadIG(url)
+        val file = ytDlpFacade.download(url)
+        val inputFile = InputFile(file)
+        val sendVideo = SendVideo(chat.idStr(), inputFile)
+        sendVideo.replyToMessageId = messageId
+        telegramClient.executeAsync(sendVideo).await()
+    }
+
+    private suspend fun sendTikTok(url: String, chat: TelegramChat, messageId: Int) {
+        when (val type = tikTokApi.getContent(url)) {
+            is VideoResponse -> {
+                val inputFile = InputFile(type.video)
+                val sendVideo = SendVideo(chat.idStr(), inputFile)
+                sendVideo.replyToMessageId = messageId
+                telegramClient.executeAsync(sendVideo).await()
+            }
+            is ImagesResponse -> {
+                for (photos in type.photo.chunked(10)) {
+                    if (photos.size == 1) {
+                        val media = InputFile(photos.first())
+                        val sendPhoto = SendPhoto(chat.idStr(), media)
+                        sendPhoto.replyToMessageId = messageId
+                        telegramClient.executeAsync(sendPhoto).await()
+                    } else {
+                        val media = photos.map { InputMediaPhoto(it) }
+                        val sendMediaGroup = SendMediaGroup(chat.idStr(), media)
+                        sendMediaGroup.replyToMessageId = messageId
+                        telegramClient.executeAsync(sendMediaGroup).await()
+                    }
+                }
+            }
         }
     }
 

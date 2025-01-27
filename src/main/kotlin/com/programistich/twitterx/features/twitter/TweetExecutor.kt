@@ -18,6 +18,7 @@ import kotlinx.coroutines.future.await
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.polls.SendPoll
+import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.methods.send.SendPhoto
@@ -97,12 +98,7 @@ class TweetExecutor(
         from: User
     ): Result<Unit> {
         val header = getHeaderText(to.language, tweet, from) + "\n\n"
-
-        val content = if (tweet.translation != null) {
-            tweet.translation + "\n---------\n" + tweet.text
-        } else {
-            tweet.text
-        }
+        val content = tweet.getContent()
 
         val limit = getLimit(tweet.content)
         val text = if (header.length + content.length > limit) {
@@ -115,9 +111,6 @@ class TweetExecutor(
             "$header$content"
         }
 
-        val sendMessage = SendMessage(to.idStr(), text)
-        sendMessage.parseMode = "HTML"
-
         return sendTweet(tweet, text, to)
     }
 
@@ -128,6 +121,9 @@ class TweetExecutor(
     ): Result<Unit> = runCatching {
         when (tweet.content) {
             is ManyMedia -> {
+                val action = SendChatAction(to.idStr(), "upload_photo")
+                telegramClient.executeAsync(action).await()
+
                 val medias = tweet.content.urls.mapIndexed { index, url ->
                     val media = InputMediaPhoto(url)
                     if (index == 0) {
@@ -140,6 +136,9 @@ class TweetExecutor(
                 telegramClient.executeAsync(method).await()
             }
             is Photo -> {
+                val action = SendChatAction(to.idStr(), "upload_photo")
+                telegramClient.executeAsync(action).await()
+
                 val inputFile = InputFile(tweet.content.url)
                 val sendPhoto = SendPhoto(to.idStr(), inputFile)
                 sendPhoto.caption = text
@@ -147,16 +146,25 @@ class TweetExecutor(
                 telegramClient.executeAsync(sendPhoto).await()
             }
             is Poll -> {
+                val action = SendChatAction(to.idStr(), "typing")
+                telegramClient.executeAsync(action).await()
+
                 val options = tweet.content.options.map { InputPollOption(it) }
                 val sendPoll = SendPoll(to.idStr(), text, options)
                 telegramClient.executeAsync(sendPoll).await()
             }
             Text -> {
+                val action = SendChatAction(to.idStr(), "typing")
+                telegramClient.executeAsync(action).await()
+
                 val sendMessage = SendMessage(to.idStr(), text)
                 sendMessage.parseMode = "HTML"
                 telegramClient.executeAsync(sendMessage).await()
             }
             is Video -> {
+                val action = SendChatAction(to.idStr(), "upload_photo")
+                telegramClient.executeAsync(action).await()
+
                 val inputFile = InputFile(tweet.content.url)
                 val sendVideo = SendVideo(to.idStr(), inputFile)
                 sendVideo.caption = text

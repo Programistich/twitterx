@@ -5,10 +5,24 @@ data class Tweet(
     val text: String,
     val author: Author,
     val content: TweetContent,
-    val translation: String?,
+    val translation: Translation?,
 ) {
     val url by lazy { "https://x.com/${author.username}/status/$id" }
+
+    fun getContent(): String {
+        return if (translation != null) {
+            "[${translation.to.uppercase()}] ${translation.text}\n\n[${translation.from.uppercase()}] $text"
+        } else {
+            text
+        }
+    }
 }
+
+data class Translation(
+    val text: String,
+    val from: String,
+    val to: String
+)
 
 sealed class TweetContent {
     data object Text : TweetContent()

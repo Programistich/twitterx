@@ -11,7 +11,9 @@ import java.util.UUID
 import java.util.logging.Logger
 
 @Component
-class YtDlpFacade(@Value("\${yt-dlp.path}") private val ytDlpPath: String) {
+class YtDlpFacade(
+    @Value("\${yt-dlp.path}") private val ytDlpPath: String
+) {
     private val logger = Logger.getLogger(this::class.java.name)
     private val deleteScope = CoroutineScope(Dispatchers.IO)
     private val videoFolder = File("video").apply {

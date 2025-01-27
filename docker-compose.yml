@@ -30,10 +30,24 @@ services:
       - POSTGRES_DB
       - POSTGRES_USER
       - POSTGRES_PASSWORD
-      - DEEPL_API_KEY
       - YT_DLP_PATH=/usr/local/bin/yt-dlp
+      - TIKTOK_SERVICE_URL=http://tiktok:3000
     depends_on:
       - twitter-db
+
+
+  tiktok:
+    build:
+      dockerfile: Dockerfile-tiktok
+      context: tikitoki
+    container_name: tiktok_container
+    restart: always
+    networks:
+      twitter-net:
+    ports:
+      - "127.0.0.1:3000:3000"
+    environment:
+      - NODE_ENV=production
 
 volumes:
   postgres-data:
