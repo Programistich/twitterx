@@ -13,11 +13,10 @@ abstract class CallbackQueryExecutor<CALLBACK : Any> : Executor<TelegramCallback
 
     override suspend fun canProcess(context: TelegramContext<TelegramCallbackQueryUpdate>): Boolean {
         return runCatching {
-            val result: CALLBACK = Json.decodeFromString(
+            Json.decodeFromString(
                 deserializer = getDeserializer(),
                 string = context.update.getData()
             )
-            println(result)
         }.isSuccess
     }
 }

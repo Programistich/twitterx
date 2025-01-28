@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.twitter
+package com.programistich.twitterx.core.twitter
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable

@@ -9,4 +9,6 @@ enum class DictionaryKey(val value: String) {
     TWEET_FIX_UPX("tweet-fixupx"),
 
     TWEET_HEADER("tweet-header"),
+
+    TWEET_INLINE_TITLE("tweet-inline-title"),
 }

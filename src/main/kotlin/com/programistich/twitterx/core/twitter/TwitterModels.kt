@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.twitter
+package com.programistich.twitterx.core.twitter
 
 data class Tweet(
     val id: String,
@@ -10,7 +10,7 @@ data class Tweet(
     val url by lazy { "https://x.com/${author.username}/status/$id" }
 
     fun getContent(): String {
-        return if (translation != null) {
+        return if (translation != null && translation.to != translation.from) {
             "[${translation.to.uppercase()}] ${translation.text}\n\n[${translation.from.uppercase()}] $text"
         } else {
             text
@@ -48,6 +48,17 @@ sealed class TweetContent {
                     ManyMedia(photoUrls + videoUrls, apiTweet.media.mosaic?.formats?.jpeg)
                 }
             }
+        }
+    }
+
+    @Suppress("MagicNumber")
+    fun getLimit(): Int {
+        return when (this) {
+            is ManyMedia -> 1024
+            is Photo -> 1024
+            is Poll -> 4096
+            Text -> 4096
+            is Video -> 1024
         }
     }
 }

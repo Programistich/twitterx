@@ -3,17 +3,18 @@ package com.programistich.twitterx.features.twitter
 import com.programistich.twitterx.core.executors.Executor
 import com.programistich.twitterx.core.repos.TelegramChat
 import com.programistich.twitterx.core.telegram.models.Language
-import com.programistich.twitterx.core.telegram.models.TelegramConfig
 import com.programistich.twitterx.core.telegram.models.TelegramContext
 import com.programistich.twitterx.core.telegram.updates.TelegramMessageUpdate
+import com.programistich.twitterx.core.telegraph.TelegraphApi
+import com.programistich.twitterx.core.twitter.Tweet
+import com.programistich.twitterx.core.twitter.TweetContent.ManyMedia
+import com.programistich.twitterx.core.twitter.TweetContent.Photo
+import com.programistich.twitterx.core.twitter.TweetContent.Poll
+import com.programistich.twitterx.core.twitter.TweetContent.Text
+import com.programistich.twitterx.core.twitter.TweetContent.Video
+import com.programistich.twitterx.core.twitter.TwitterApi
 import com.programistich.twitterx.features.dict.DictionaryCache
 import com.programistich.twitterx.features.dict.DictionaryKey
-import com.programistich.twitterx.features.telegraph.TelegraphApi
-import com.programistich.twitterx.features.twitter.TweetContent.ManyMedia
-import com.programistich.twitterx.features.twitter.TweetContent.Photo
-import com.programistich.twitterx.features.twitter.TweetContent.Poll
-import com.programistich.twitterx.features.twitter.TweetContent.Text
-import com.programistich.twitterx.features.twitter.TweetContent.Video
 import kotlinx.coroutines.future.await
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -31,59 +32,47 @@ import org.telegram.telegrambots.meta.api.objects.polls.input.InputPollOption
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
 @Component
-class TweetExecutor(
+class TweetMessageExecutor(
     private val twitterApi: TwitterApi,
     private val telegraphApi: TelegraphApi,
     private val dictionary: DictionaryCache,
-    private val telegramConfig: TelegramConfig,
     private val telegramClient: TelegramClient
 ) : Executor<TelegramMessageUpdate> {
-    companion object {
-        private const val TWEET_REGEX = "https://(?:mobile.)?(?:twitter.com|x.com)/([a-zA-Z0-9_]+)/status/([0-9]+)?(.*)"
-    }
-
     private val logger = LoggerFactory.getLogger(this::class.java)
 
     override val priority: Executor.Priority
-        get() = Executor.Priority.MEDIUM
-
-    private fun getTweetIds(text: String): List<String> {
-        return TWEET_REGEX.toRegex().findAll(text).map { it.groupValues[2] }.toList()
-    }
+        get() = Executor.Priority.HIGH
 
     override suspend fun canProcess(context: TelegramContext<TelegramMessageUpdate>): Boolean {
         val text = context.update.getText() ?: return false
-        return getTweetIds(text).isNotEmpty()
+        return twitterApi.getTweetIds(text).isNotEmpty()
     }
 
     override suspend fun process(context: TelegramContext<TelegramMessageUpdate>): Result<Unit> {
         val from = context.update.getFrom() ?: return Result.failure(Exception("From is null"))
         val chat = context.chat ?: return Result.failure(Exception("Chat is null"))
         val text = context.update.getText() ?: return Result.failure(Exception("Text is null"))
-        val tweetId = getTweetIds(text).firstOrNull() ?: return Result.failure(Exception("Tweet id is null"))
+        val tweetId = twitterApi.getTweetIds(text).firstOrNull() ?: return Result.failure(Exception("Tweet id is null"))
 
         val tweet = twitterApi
             .getTweet(tweetId, chat.language.iso)
             .getOrNull()
             ?: return handleTweetException(tweetId = tweetId, to = chat)
 
+        val result = handleTweet(tweet = tweet, to = chat, from = from)
+
         runCatching {
             val deleteMessage = DeleteMessage(chat.idStr(), context.update.messageId())
             telegramClient.executeAsync(deleteMessage).await()
         }
 
-        return handleTweet(tweet = tweet, to = chat, from = from)
+        return result
     }
 
     private suspend fun handleTweetException(tweetId: String, to: TelegramChat): Result<Unit> {
         logger.error("Tweet not found: $tweetId")
         val fixUrl = "https://fixupx.com/status/$tweetId/${to.language.iso}"
         val text = dictionary.getByKey(DictionaryKey.TWEET_FIX_UPX, to.language, fixUrl)
-
-        runCatching {
-            val sendMessage = SendMessage(telegramConfig.ownerId, "Tweet not found: $tweetId")
-            telegramClient.executeAsync(sendMessage).await()
-        }
 
         return runCatching {
             val sendMessage = SendMessage(to.idStr(), text)
@@ -100,7 +89,7 @@ class TweetExecutor(
         val header = getHeaderText(to.language, tweet, from) + "\n\n"
         val content = tweet.getContent()
 
-        val limit = getLimit(tweet.content)
+        val limit = tweet.content.getLimit()
         val text = if (header.length + content.length > limit) {
             val url = telegraphApi.createPage(
                 title = "\u200E",
@@ -189,13 +178,3 @@ class TweetExecutor(
     }
 }
 
-@Suppress("MagicNumber")
-private fun getLimit(content: TweetContent): Int {
-    return when (content) {
-        is ManyMedia -> 1024
-        is Photo -> 1024
-        is Poll -> 4096
-        Text -> 4096
-        is Video -> 1024
-    }
-}

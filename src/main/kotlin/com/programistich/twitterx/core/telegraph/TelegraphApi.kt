@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.telegraph
+package com.programistich.twitterx.core.telegraph
 
 import com.programistich.twitterx.core.telegram.models.TelegramConfig
 import io.ktor.client.HttpClient

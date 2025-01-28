@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.telegraph
+package com.programistich.twitterx.core.telegraph
 
 open class TelegraphException(message: String? = null) : Exception(message)
 

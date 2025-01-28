@@ -8,6 +8,7 @@ sealed interface TelegramUpdate {
             return when {
                 this.hasMessage() -> TelegramMessageUpdate(this.message)
                 this.hasCallbackQuery() -> TelegramCallbackQueryUpdate(this.callbackQuery)
+                this.hasInlineQuery() -> TelegramInlineQuery(this.inlineQuery)
                 else -> null
             }
         }

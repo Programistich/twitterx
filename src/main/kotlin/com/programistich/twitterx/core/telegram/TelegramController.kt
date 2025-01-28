@@ -46,6 +46,7 @@ class TelegramController(
     }
 
     private suspend fun consumeInternal(update: Update) {
+        println(update)
         val telegramUpdate = update.toTelegramUpdate() ?: return
         val chatId = (telegramUpdate as? TelegramUpdateWithChatId)?.chatId() ?: return
 
@@ -74,7 +75,9 @@ class TelegramController(
                 @Suppress("UNCHECKED_CAST")
                 it as Executor<TelegramUpdate>
             }
-            .find { executor -> executor.canProcess(context) }
+            .find { executor ->
+                runCatching { executor.canProcess(context) }.getOrDefault(false)
+            }
             .also { logger.info("Executor $it for update $telegramUpdate ") }
             ?: return
 

@@ -28,6 +28,11 @@ en="<a href=\"{}\">Tweet</a> from {} by {}"
 ru="<a href=\"{}\">Твит</a> от {} by {}"
 ua="<a href=\"{}\">Твіт</a> від {} by {}"
 
+[tweet-inline-title]
+en="[EN] Tweet by {}"
+ru="[RU] Твит от {}"
+ua="[UA] Твіт від {}"
+
 [language-callback-expired]
 en="Sorry, but the time for choosing the language has expired. Please, try again."
 ru="Извините, но время для выбора языка истекло. Пожалуйста, попробуйте еще раз."

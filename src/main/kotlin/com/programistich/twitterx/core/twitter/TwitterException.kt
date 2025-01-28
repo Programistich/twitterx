@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.twitter
+package com.programistich.twitterx.core.twitter
 
 open class TwitterException(override val message: String) : Exception(message)
 

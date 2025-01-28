@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.twitter
+package com.programistich.twitterx.core.twitter
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
@@ -9,6 +9,14 @@ import org.springframework.stereotype.Component
 class TwitterApi(
     private val httpClient: HttpClient
 ) {
+    companion object {
+        private const val TWEET_REGEX = "https://(?:mobile.)?(?:twitter.com|x.com)/([a-zA-Z0-9_]+)/status/([0-9]+)?(.*)"
+    }
+
+    fun getTweetIds(text: String): List<String> {
+        return TWEET_REGEX.toRegex().findAll(text).map { it.groupValues[2] }.toList()
+    }
+
     suspend fun getTweet(id: String, lang: String): Result<Tweet> {
         return getTweetInternal(tweetId = id, lang = lang).map(::convert)
     }

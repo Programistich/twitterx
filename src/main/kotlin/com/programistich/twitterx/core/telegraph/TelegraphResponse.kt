@@ -1,4 +1,4 @@
-package com.programistich.twitterx.features.telegraph
+package com.programistich.twitterx.core.telegraph
 
 import kotlinx.serialization.SerialName
 import kotlinx.serialization.Serializable
