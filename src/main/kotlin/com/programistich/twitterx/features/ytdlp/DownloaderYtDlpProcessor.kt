@@ -28,7 +28,7 @@ class DownloaderYtDlpProcessor(
         get() = Executor.Priority.HIGH
 
     override suspend fun canProcess(context: TelegramContext<TelegramMessageUpdate>): Boolean {
-        return context.update.getUrls().any { isIG(it) || isTikTok(it) }
+        return context.update.getUrls().any { isIG(it) || isTikTok(it) || isYoutubeShorts(it) }
     }
 
     override suspend fun process(context: TelegramContext<TelegramMessageUpdate>): Result<Unit> {
@@ -36,7 +36,7 @@ class DownloaderYtDlpProcessor(
         val messageId = context.update.messageId()
 
         context.update.getUrls()
-            .filter { isIG(it) || isTikTok(it) }
+            .filter { isIG(it) || isTikTok(it) || isYoutubeShorts(it) }
             .forEach { processUrl(it, chat, messageId) }
 
         return Result.success(Unit)
@@ -56,11 +56,19 @@ class DownloaderYtDlpProcessor(
             when {
                 isTikTok(url) -> sendTikTok(url, chat, messageId)
                 isIG(url) -> sendInstagram(url, chat, messageId)
-                else -> {}
+                isYoutubeShorts(url) -> sendYoutubeShorts(url, chat, messageId)
             }
         } catch (e: Exception) {
             logger.error("Failed to download video from $url", e)
         }
+    }
+
+    private suspend fun sendYoutubeShorts(url: String, chat: TelegramChat, messageId: Int) {
+        val file = ytDlpFacade.download(url)
+        val inputFile = InputFile(file)
+        val sendVideo = SendVideo(chat.idStr(), inputFile)
+        sendVideo.replyToMessageId = messageId
+        telegramClient.executeAsync(sendVideo).await()
     }
 
     private suspend fun sendInstagram(url: String, chat: TelegramChat, messageId: Int) {
@@ -101,4 +109,6 @@ class DownloaderYtDlpProcessor(
     private fun isTikTok(text: String) = text.contains("tiktok", ignoreCase = true)
 
     private fun isIG(text: String) = text.contains("instagram", ignoreCase = true)
+
+    private fun isYoutubeShorts(text: String) = text.contains("youtube.com/shorts", ignoreCase = true)
 }
