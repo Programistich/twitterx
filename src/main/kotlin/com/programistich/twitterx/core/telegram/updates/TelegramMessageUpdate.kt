@@ -15,6 +15,8 @@ class TelegramMessageUpdate(
 
     private fun Message.getCommand(botName: String): TelegramCommand? {
         val entities = this.entities ?: return null
+        val text = this.text ?: return null
+
         val commandEntity = entities.firstOrNull { it.type == EntityType.BOTCOMMAND } ?: return null
         val commandText = this
             .text
@@ -22,6 +24,9 @@ class TelegramMessageUpdate(
             ?: return null
 
         val parts = commandText.split("@")
+        if (parts.isEmpty()) return null
+        if (!text.startsWith(parts[0])) return null
+
         return when {
             parts.size == 1 -> TelegramCommand.fromValue(parts[0])
             parts.size == 2 && parts[1] == botName -> TelegramCommand.fromValue(parts[0])
