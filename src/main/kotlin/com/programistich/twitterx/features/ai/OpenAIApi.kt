@@ -34,7 +34,6 @@ class OpenAIApi(
         }
 
         if (replyMessages.isNotEmpty()) {
-
             messages.add(
                 ChatMessage(
                     Role.System,
@@ -74,10 +73,10 @@ class OpenAIApi(
         return ChatCompletionRequest(
             model = ModelId("gpt-4o-mini"),
             messages = chatMessages,
-            temperature = 0.9,
-            topP = 1.0,
-            frequencyPenalty = 0.0,
-            presencePenalty = 0.6
+            temperature = 1.2, // Increased from 0.9 to encourage more creative responses
+            topP = 0.95, // Slightly reduced to maintain some coherence while allowing creativity
+            frequencyPenalty = 0.8, // Increased to encourage more varied word choice and avoid repetition
+            presencePenalty = 0.7 // Slightly increased to encourage introducing new concepts
         )
     }
 }
