@@ -6,7 +6,7 @@ import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
 class TelegramMessageUpdate(
-    private val message: Message
+    val message: Message
 ) : TelegramUpdate, TelegramUpdateWithChatId {
 
     fun getCommand(botName: String): TelegramCommand? {
@@ -30,11 +30,15 @@ class TelegramMessageUpdate(
     }
 
     fun getText(): String? {
-        return this.message.text
+        return this.message.text?.trim()
     }
 
     fun getFrom(): User? {
         return this.message.from
+    }
+
+    fun getReply(): Message? {
+        return this.message.replyToMessage
     }
 
     fun getUrls(): List<String> {
@@ -48,3 +52,6 @@ class TelegramMessageUpdate(
 
     fun messageId(): Int = message.messageId
 }
+
+fun Message.getText() = this.text?.trim()
+fun Message.getTextWithoutCommand(): String? = this.text?.split(" ")?.drop(1)?.joinToString(" ")?.trim()

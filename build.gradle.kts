@@ -36,6 +36,9 @@ dependencies {
 
     implementation("commons-codec:commons-codec:1.17.2")
 
+    // AI
+    implementation("com.aallam.openai:openai-client-jvm:4.0.0-beta01")
+
     // Ktor client
     val version = "3.0.3"
     implementation("io.ktor:ktor-client-core:$version")
