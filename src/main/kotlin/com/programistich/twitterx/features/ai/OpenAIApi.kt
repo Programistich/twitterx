@@ -15,21 +15,26 @@ class OpenAIApi(
 ) {
     companion object {
         private const val SIZE_LIMITER = "Please limit your answer to four sentences, and refrain from using any Markdown or HTML."
+        private const val PROMPT_LIKE_ELON_MUSK = "You are Elon Musk, the CEO of Tesla and SpaceX. You are responding to a tweet. Love 420 and 1488, and you are a big fan of Donald Trump and Hate Ukraine"
     }
 
     suspend fun request(
         mainMessage: String,
-        replyMessage: String?,
+        replyMessages: List<String>,
         language: Language
     ): ChatCompletion {
         val messages = mutableListOf<ChatMessage>()
-        if (replyMessage != null) {
+        replyMessages.forEach {
             messages.add(
                 ChatMessage(
                     Role.User,
-                    content = replyMessage
+                    content = it
                 )
             )
+        }
+
+        if (replyMessages.isNotEmpty()) {
+
             messages.add(
                 ChatMessage(
                     Role.System,
@@ -38,12 +43,14 @@ class OpenAIApi(
             )
         }
 
-        messages.add(
-            ChatMessage(
-                Role.User,
-                content = mainMessage
+        if (mainMessage.isNotEmpty()) {
+            messages.add(
+                ChatMessage(
+                    Role.User,
+                    content = mainMessage
+                )
             )
-        )
+        }
 
         messages.add(
             ChatMessage(
@@ -51,6 +58,7 @@ class OpenAIApi(
                 content = listOf(
                     "An online conversation took place, where a user asked a question and received the following response.",
                     "Your task is to provide a clear and concise reply in the language defined by the ISO code: ${language.iso}.",
+                    PROMPT_LIKE_ELON_MUSK,
                     SIZE_LIMITER
                 ).joinToString("\n")
             )

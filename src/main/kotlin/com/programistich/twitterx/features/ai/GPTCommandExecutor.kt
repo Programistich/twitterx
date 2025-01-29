@@ -9,6 +9,7 @@ import kotlinx.coroutines.future.await
 import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
+import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
 @Component
@@ -31,13 +32,14 @@ class GPTCommandExecutor(
         }
 
         val message = context.update.message
-        val replyMessage = context.update.message.replyToMessage
+        val replyMessages = message.getAllReplyMessages()
 
         val textMessage = message.getTextWithoutCommand()
             ?: return Result.failure(IllegalArgumentException("Text is required"))
-        val replyText = replyMessage?.getTextWithoutCommand()
 
-        if (textMessage.isEmpty() && replyMessage == null) {
+        val textReplyMessages = replyMessages.mapNotNull { it.getTextWithoutCommand() }
+
+        if (textMessage.isEmpty() && textReplyMessages.isEmpty()) {
             return Result.failure(IllegalArgumentException("Text and reply message are required"))
         }
 
@@ -46,7 +48,7 @@ class GPTCommandExecutor(
 
         val openAIResult = openAIApi.request(
             textMessage,
-            replyText,
+            textReplyMessages,
             chat.language
         )
 
@@ -59,6 +61,7 @@ class GPTCommandExecutor(
             ?: "No response from OpenAI"
 
         val sendMessage = SendMessage("${chat.id}", result)
+        sendMessage.replyToMessageId = message.messageId
         telegramClient.executeAsync(sendMessage).await()
 
         return Result.success(Unit)
@@ -67,3 +70,12 @@ class GPTCommandExecutor(
     private fun String.code(): String = "<code>$this</code>"
 }
 
+fun Message.getAllReplyMessages(): List<Message> {
+    val replies = mutableListOf<Message>()
+    var currentReply = this.replyToMessage
+    while (currentReply != null) {
+        replies.add(currentReply)
+        currentReply = currentReply.replyToMessage
+    }
+    return replies
+}
