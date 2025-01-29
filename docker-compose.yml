@@ -32,6 +32,7 @@ services:
       - POSTGRES_PASSWORD
       - YT_DLP_PATH=/usr/local/bin/yt-dlp
       - TIKTOK_SERVICE_URL=http://tiktok:3000
+      - OPENAI_API_KEY
     depends_on:
       - twitter-db
 
