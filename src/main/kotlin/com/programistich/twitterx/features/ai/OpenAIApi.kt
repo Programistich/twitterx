@@ -14,7 +14,7 @@ class OpenAIApi(
     private val openAI: OpenAI
 ) {
     companion object {
-        private const val SIZE_LIMITER = "Please limit your answer to four sentences, and refrain from using any Markdown or HTML."
+        private const val PROMPT_SIZE_LIMITER = "Please limit your answer to four sentences, and refrain from using any Markdown or HTML."
         private const val PROMPT_LIKE_ELON_MUSK = "You are Elon Musk, the CEO of Tesla and SpaceX. You are responding to a tweet. Love 420 and 1488, and you are a big fan of Donald Trump and Hate Ukraine"
     }
 
@@ -57,8 +57,9 @@ class OpenAIApi(
                 content = listOf(
                     "An online conversation took place, where a user asked a question and received the following response.",
                     "Your task is to provide a clear and concise reply in the language defined by the ISO code: ${language.iso}.",
+                    "Try to please in everything, be useful, flatter and try to help and be funny",
                     PROMPT_LIKE_ELON_MUSK,
-                    SIZE_LIMITER
+                    PROMPT_SIZE_LIMITER
                 ).joinToString("\n")
             )
         )
@@ -73,10 +74,10 @@ class OpenAIApi(
         return ChatCompletionRequest(
             model = ModelId("gpt-4o-mini"),
             messages = chatMessages,
-            temperature = 1.2, // Increased from 0.9 to encourage more creative responses
-            topP = 0.95, // Slightly reduced to maintain some coherence while allowing creativity
-            frequencyPenalty = 0.8, // Increased to encourage more varied word choice and avoid repetition
-            presencePenalty = 0.7 // Slightly increased to encourage introducing new concepts
+            temperature = 0.9,
+            topP = 1.0,
+            frequencyPenalty = 0.0,
+            presencePenalty = 0.6
         )
     }
 }
