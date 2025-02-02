@@ -10,13 +10,12 @@ import com.programistich.twitterx.core.telegram.updates.getTextWithoutCommand
 import com.programistich.twitterx.features.dict.DictionaryCache
 import com.programistich.twitterx.features.dict.DictionaryKey
 import kotlinx.coroutines.future.await
-import org.springframework.stereotype.Component
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
 import org.telegram.telegrambots.meta.api.objects.message.Message
 import org.telegram.telegrambots.meta.generics.TelegramClient
 
-@Component
+//@Component Disable
 class GPTCommandExecutor(
     private val openAIApi: OpenAIApi,
     private val telegramClient: TelegramClient,
@@ -24,7 +23,7 @@ class GPTCommandExecutor(
     private val botConfig: TelegramConfig
 ) : CommandExecutor() {
     companion object {
-        private val ALLOWED_CHATS = listOf("-1001488807577", "241629528")
+        private val ALLOWED_CHATS = listOf("-1001488807577", "241629528", "-1002127649489")
         private val codeMarkupPattern = Regex("`{1,3}([^`]+)`{1,3}")
     }
 
