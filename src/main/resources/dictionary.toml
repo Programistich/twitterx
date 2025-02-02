@@ -33,6 +33,11 @@ en="[EN] Tweet by {}"
 ru="[RU] Твит от {}"
 ua="[UA] Твіт від {}"
 
+[open-ai-error]
+en="Sorry, but an error occurred while processing the request."
+ru="Извините, но произошла ошибка при обработке запроса."
+ua="Вибачте, але сталася помилка під час обробки запиту."
+
 [language-callback-expired]
 en="Sorry, but the time for choosing the language has expired. Please, try again."
 ru="Извините, но время для выбора языка истекло. Пожалуйста, попробуйте еще раз."

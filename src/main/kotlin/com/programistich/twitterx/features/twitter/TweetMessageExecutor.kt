@@ -44,14 +44,14 @@ class TweetMessageExecutor(
         get() = Executor.Priority.HIGH
 
     override suspend fun canProcess(context: TelegramContext<TelegramMessageUpdate>): Boolean {
-        val text = context.update.getText() ?: return false
+        val text = context.update.message.text?.trim() ?: return false
         return twitterApi.getTweetIds(text).isNotEmpty()
     }
 
     override suspend fun process(context: TelegramContext<TelegramMessageUpdate>): Result<Unit> {
-        val from = context.update.getFrom() ?: return Result.failure(Exception("From is null"))
+        val from = context.update.message.from ?: return Result.failure(Exception("From is null"))
         val chat = context.chat ?: return Result.failure(Exception("Chat is null"))
-        val text = context.update.getText() ?: return Result.failure(Exception("Text is null"))
+        val text = context.update.message.text?.trim() ?: return Result.failure(Exception("Text is null"))
         val tweetId = twitterApi.getTweetIds(text).firstOrNull() ?: return Result.failure(Exception("Tweet id is null"))
 
         val tweet = twitterApi

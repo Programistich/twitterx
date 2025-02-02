@@ -2,7 +2,6 @@ package com.programistich.twitterx.core.telegram.updates
 
 import com.programistich.twitterx.core.telegram.models.TelegramCommand
 import org.telegram.telegrambots.meta.api.objects.EntityType
-import org.telegram.telegrambots.meta.api.objects.User
 import org.telegram.telegrambots.meta.api.objects.message.Message
 
 class TelegramMessageUpdate(
@@ -10,15 +9,12 @@ class TelegramMessageUpdate(
 ) : TelegramUpdate, TelegramUpdateWithChatId {
 
     fun getCommand(botName: String): TelegramCommand? {
-        return message.getCommand(botName)
-    }
-
-    private fun Message.getCommand(botName: String): TelegramCommand? {
-        val entities = this.entities ?: return null
-        val text = this.text ?: return null
+        val entities = message.entities ?: return null
+        val text = message.text ?: return null
 
         val commandEntity = entities.firstOrNull { it.type == EntityType.BOTCOMMAND } ?: return null
         val commandText = this
+            .message
             .text
             ?.substring(commandEntity.offset, commandEntity.offset + commandEntity.length)
             ?: return null
@@ -34,18 +30,6 @@ class TelegramMessageUpdate(
         }
     }
 
-    fun getText(): String? {
-        return this.message.text?.trim()
-    }
-
-    fun getFrom(): User? {
-        return this.message.from
-    }
-
-    fun getReply(): Message? {
-        return this.message.replyToMessage
-    }
-
     fun getUrls(): List<String> {
         return this.message.entities
             ?.filter { it.type == EntityType.URL }
@@ -58,5 +42,4 @@ class TelegramMessageUpdate(
     fun messageId(): Int = message.messageId
 }
 
-fun Message.getText() = this.text?.trim()
 fun Message.getTextWithoutCommand(): String? = this.text?.split(" ")?.drop(1)?.joinToString(" ")?.trim()

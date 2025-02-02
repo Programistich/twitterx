@@ -11,4 +11,6 @@ enum class DictionaryKey(val value: String) {
     TWEET_HEADER("tweet-header"),
 
     TWEET_INLINE_TITLE("tweet-inline-title"),
+
+    OPEN_AI_ERROR("open-ai-error"),
 }
