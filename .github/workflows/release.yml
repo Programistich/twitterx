@@ -1,0 +1,23 @@
+name: CI/CD
+
+on:
+  push:
+    branches: [main]
+
+concurrency:
+  group: ${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  remote-ssh:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: deploy it
+        uses: appleboy/ssh-action@v1.2.0
+        with:
+          host: ${{ secrets.SSH_HOST }}
+          username: ${{ secrets.SSH_USERNAME }}
+          key: ${{ secrets.SSH_KEY }}
+          port: ${{ secrets.SSH_PORT }}
+          script: ${{ secrets.SSH_COMMAND }}
