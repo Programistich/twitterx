@@ -110,5 +110,6 @@ class DownloaderYtDlpProcessor(
 
     private fun isIG(text: String) = text.contains("instagram", ignoreCase = true)
 
-    private fun isYoutubeShorts(text: String) = text.contains("youtube.com/shorts", ignoreCase = true)
+//    private fun isYoutubeShorts(text: String) = text.contains("youtube.com/shorts", ignoreCase = true)
+    private fun isYoutubeShorts(text: String) = false // TODO: Need cookies
 }
