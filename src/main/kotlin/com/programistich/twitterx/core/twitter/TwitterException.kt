@@ -7,5 +7,3 @@ class PrivateTwitterException : TwitterException("This tweet is private")
 class NotFoundTwitterException : TwitterException("Tweet not found")
 
 class ApiFailTwitterException : TwitterException("API failure")
-
-class LongTwitterException : TwitterException("Tweet so long")

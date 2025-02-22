@@ -5,6 +5,7 @@ data class Tweet(
     val text: String,
     val author: Author,
     val content: TweetContent,
+    val note: String?,
     val translation: Translation?,
 ) {
     val url by lazy { "https://x.com/${author.username}/status/$id" }

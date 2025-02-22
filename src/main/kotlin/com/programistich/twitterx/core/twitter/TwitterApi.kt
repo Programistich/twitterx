@@ -30,8 +30,13 @@ class TwitterApi(
             text = apiTweet.text,
             author = author,
             content = TweetContent.from(apiTweet),
+            note = apiTweet.communityNote?.text,
             translation = apiTweet.translation?.let {
-                Translation(text = it.text, from = it.sourceLang, to = it.targetLang)
+                Translation(
+                    text = it.text,
+                    from = it.sourceLang,
+                    to = it.targetLang,
+                )
             }
         )
     }

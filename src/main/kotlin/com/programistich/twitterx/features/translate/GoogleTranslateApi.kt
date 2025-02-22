@@ -13,7 +13,7 @@ class GoogleTranslateApi(
         private const val BASE_URL = "https://translate.google.com/translate_a/single"
     }
 
-    suspend fun translate(text: String, to: String): GoogleTranslateResult {
+    suspend fun translate(text: String, to: String): GoogleTranslateResult? {
         return try {
             val response = httpClient.get(BASE_URL) {
                 url {
@@ -27,12 +27,11 @@ class GoogleTranslateApi(
                 }
             }.body<GoogleTranslateResponse>()
 
-            val result = response.sentences.firstOrNull()
-                ?: return GoogleTranslateResult.Error(GoogleTranslateResult.ErrorType.EMPTY_RESPONSE)
+            val result = response.sentences.firstOrNull() ?: return null
 
-            return GoogleTranslateResult.Translated(from = result.orig, to = result.trans)
+            GoogleTranslateResult(from = result.orig, to = result.trans)
         } catch (e: Exception) {
-            GoogleTranslateResult.Error(GoogleTranslateResult.ErrorType.UNKNOWN)
+            null
         }
     }
 }

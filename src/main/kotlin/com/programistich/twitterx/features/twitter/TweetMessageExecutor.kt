@@ -2,7 +2,6 @@ package com.programistich.twitterx.features.twitter
 
 import com.programistich.twitterx.core.executors.Executor
 import com.programistich.twitterx.core.repos.TelegramChat
-import com.programistich.twitterx.core.telegram.models.Language
 import com.programistich.twitterx.core.telegram.models.TelegramContext
 import com.programistich.twitterx.core.telegram.updates.TelegramMessageUpdate
 import com.programistich.twitterx.core.telegraph.TelegraphApi
@@ -15,6 +14,7 @@ import com.programistich.twitterx.core.twitter.TweetContent.Video
 import com.programistich.twitterx.core.twitter.TwitterApi
 import com.programistich.twitterx.features.dict.DictionaryCache
 import com.programistich.twitterx.features.dict.DictionaryKey
+import com.programistich.twitterx.features.translate.GoogleTranslateApi
 import kotlinx.coroutines.future.await
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
@@ -36,7 +36,8 @@ class TweetMessageExecutor(
     private val twitterApi: TwitterApi,
     private val telegraphApi: TelegraphApi,
     private val dictionary: DictionaryCache,
-    private val telegramClient: TelegramClient
+    private val telegramClient: TelegramClient,
+    private val googleTranslateApi: GoogleTranslateApi
 ) : Executor<TelegramMessageUpdate> {
     private val logger = LoggerFactory.getLogger(this::class.java)
 
@@ -86,11 +87,12 @@ class TweetMessageExecutor(
         to: TelegramChat,
         from: User
     ): Result<Unit> {
-        val header = getHeaderText(to.language, tweet, from) + "\n\n"
+        val header = getHeaderText(to, tweet, from) + "\n\n"
         val content = tweet.getContent()
 
-        val limit = tweet.content.getLimit()
-        val text = if (header.length + content.length > limit) {
+        val size = header.length + content.length
+
+        val text = if (size > tweet.content.getLimit()) {
             val url = telegraphApi.createPage(
                 title = "\u200E",
                 content = content
@@ -101,6 +103,28 @@ class TweetMessageExecutor(
         }
 
         return sendTweet(tweet, text, to)
+    }
+
+    private suspend fun processNotes(
+        tweet: Tweet,
+        to: TelegramChat,
+    ): String {
+        val originalNotes = tweet.note ?: return ""
+        val translation = googleTranslateApi.translate(
+            originalNotes, to.language.iso
+        ) ?: return ""
+
+        val content = if (tweet.translation != null && translation.to != translation.from) {
+            "[${tweet.translation.to.uppercase()}] ${translation.to}\n\n[${tweet.translation.from.uppercase()}] ${translation.from}"
+        } else {
+            translation.from
+        }
+
+        val url = telegraphApi.createPage(
+            title = "Community Note by tweet ${tweet.id}",
+            content = content
+        ).getOrThrow()
+        return "<a href=\"$url\">📝</a>"
     }
 
     private suspend fun sendTweet(
@@ -163,18 +187,20 @@ class TweetMessageExecutor(
         }
     }
 
-    private fun getHeaderText(
-        lang: Language,
+    private suspend fun getHeaderText(
+        to: TelegramChat,
         tweet: Tweet,
         from: User
     ): String {
+        val notes = processNotes(tweet, to)
+
         return dictionary.getByKey(
             key = DictionaryKey.TWEET_HEADER,
-            language = lang,
+            language = to.language,
             tweet.url,
             "<a href=\"${tweet.author.url}\">${tweet.author.username}</a>",
-            from.firstName
+            from.firstName,
+            notes
         )
     }
 }
-

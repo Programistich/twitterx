@@ -32,6 +32,7 @@ data class APITweet(
     @SerialName("poll") val poll: APIPoll? = null,
     @SerialName("translation") val translation: APITranslate? = null,
     @SerialName("media") val media: Media? = null,
+    @SerialName("community_note") val communityNote: CommunityNote? = null,
 )
 
 @Serializable
@@ -113,4 +114,9 @@ data class Media(
     @SerialName("photos") val photos: List<APIPhoto>? = null,
     @SerialName("videos") val videos: List<APIVideo>? = null,
     @SerialName("mosaic") val mosaic: APIMosaicPhoto? = null
+)
+
+@Serializable
+data class CommunityNote(
+    @SerialName("text") val text: String
 )
