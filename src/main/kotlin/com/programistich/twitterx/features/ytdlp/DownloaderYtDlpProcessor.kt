@@ -106,9 +106,12 @@ class DownloaderYtDlpProcessor(
         }
     }
 
-    private fun isTikTok(text: String) = text.contains("tiktok", ignoreCase = true)
+//    private fun isTikTok(text: String) = text.contains("tiktok", ignoreCase = true)
+    private fun isTikTok(text: String) = false // TODO: Need find API
 
-    private fun isIG(text: String) = text.contains("instagram.com", ignoreCase = true) && text.contains("/reel/", ignoreCase = true)
+    private fun isIG(text: String): Boolean {
+        return text.contains("instagram.com", ignoreCase = true) && text.contains("/reel/", ignoreCase = true)
+    }
 
 //    private fun isYoutubeShorts(text: String) = text.contains("youtube.com/shorts", ignoreCase = true)
     private fun isYoutubeShorts(text: String) = false // TODO: Need cookies
