@@ -37,18 +37,18 @@ services:
       - twitter-db
 
 
-  tiktok:
-    build:
-      dockerfile: Dockerfile-tiktok
-      context: tikitoki
-    container_name: tiktok_container
-    restart: always
-    networks:
-      twitter-net:
-    ports:
-      - "127.0.0.1:3000:3000"
-    environment:
-      - NODE_ENV=production
+#  tiktok:
+#    build:
+#      dockerfile: Dockerfile-tiktok
+#      context: tikitoki
+#    container_name: tiktok_container
+#    restart: always
+#    networks:
+#      twitter-net:
+#    ports:
+#      - "127.0.0.1:3000:3000"
+#    environment:
+#      - NODE_ENV=production
 
 volumes:
   postgres-data:
