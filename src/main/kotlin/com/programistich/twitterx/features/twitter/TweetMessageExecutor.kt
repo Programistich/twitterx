@@ -199,8 +199,7 @@ class TweetMessageExecutor(
             language = to.language,
             tweet.url,
             "<a href=\"${tweet.author.url}\">${tweet.author.username}</a>",
-            from.firstName,
-            notes
-        )
+            from.firstName
+        ) + "\n\n" + notes
     }
 }
