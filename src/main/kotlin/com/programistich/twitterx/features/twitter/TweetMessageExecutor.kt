@@ -200,6 +200,6 @@ class TweetMessageExecutor(
             tweet.url,
             "<a href=\"${tweet.author.url}\">${tweet.author.username}</a>",
             from.firstName
-        ) + "\n\n" + notes
+        ) + if (notes.isNotEmpty()) "\n\n$notes" else ""
     }
 }
