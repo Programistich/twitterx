@@ -1,0 +1,65 @@
+[versions]
+kotlin="2.2.0"
+ktor="3.2.1"
+
+spring-boot = "3.5.3"
+sping-dependency-management = "1.1.7"
+
+kotlinx-serialization-json = "1.9.0"
+kotlinx-coroutines = "1.10.2"
+
+slf4j = "2.0.16"
+logback = "1.5.15"
+
+detekt = "1.23.8"
+
+telegram = "9.0.0"
+
+[libraries]
+kotlin-test = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
+kotlin-reflect = { module = "org.jetbrains.kotlin:kotlin-reflect", version.ref = "kotlin" }
+
+ktor-client-core = { module = "io.ktor:ktor-client-core", version.ref = "ktor" }
+ktor-client-logging = { module = "io.ktor:ktor-client-logging", version.ref = "ktor" }
+ktor-client-cio = { module = "io.ktor:ktor-client-cio", version.ref = "ktor" }
+ktor-client-content-negotiation = { module = "io.ktor:ktor-client-content-negotiation", version.ref = "ktor" }
+ktor-client-mock = { module = "io.ktor:ktor-client-mock", version.ref = "ktor" }
+
+ktor-client-serialization = { module = "io.ktor:ktor-client-serialization", version.ref = "ktor" }
+ktor-client-serialization-json = { module = "io.ktor:ktor-serialization-kotlinx-json", version.ref = "ktor" }
+
+kotlinx-serialization-json = { module = "org.jetbrains.kotlinx:kotlinx-serialization-json", version.ref = "kotlinx-serialization-json" }
+
+kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinx-coroutines" }
+kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinx-coroutines" }
+
+slf4j-api = { module = "org.slf4j:slf4j-api", version.ref = "slf4j" }
+logback-classic = { module = "ch.qos.logback:logback-classic", version.ref = "logback" }
+
+telegram-spring = { module = "org.telegram:telegrambots-springboot-longpolling-starter", version.ref = "telegram" }
+telegram-client = { module = "org.telegram:telegrambots-client", version.ref = "telegram" }
+
+spring-data-jpa = { module = "org.springframework.boot:spring-boot-starter-data-jpa" }
+spring-web = { module = "org.springframework.boot:spring-boot-starter-web" }
+
+[bundles]
+ktor-client = [
+    "ktor-client-core",
+    "ktor-client-logging",
+    "ktor-client-cio",
+    "ktor-client-content-negotiation",
+    "ktor-client-serialization",
+    "ktor-client-serialization-json",
+]
+
+logging-api = ["slf4j-api"]
+logging-impl = ["logback-classic"]
+
+[plugins]
+kotlin-jvm= { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+kotlin-serialization = { id = "org.jetbrains.kotlin.plugin.serialization", version.ref = "kotlin" }
+
+spring-boot = { id = "org.springframework.boot", version.ref = "spring-boot" }
+spring-dependency-management = { id = "io.spring.dependency-management", version.ref = "sping-dependency-management" }
+
+detekt = { id = "io.gitlab.arturbosch.detekt", version.ref = "detekt" }

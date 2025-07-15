@@ -1,0 +1,28 @@
+{
+  "code": 200,
+  "message": "OK",
+  "tweet": {
+    "id": "1548602399862013970",
+    "url": "https://twitter.com/replyuser/status/1548602399862013970",
+    "text": "@originaluser That sounds incredible! Can you tell us more about the technical details? I'm particularly interested in the implementation. #excited",
+    "created_at": "Sun Jul 17 10:45:22 +0000 2022",
+    "created_timestamp": 1658054722,
+    "author": {
+      "name": "Reply User",
+      "screen_name": "replyuser",
+      "avatar_url": "https://pbs.twimg.com/profile_images/1532100022648680452/4z6Ml6Qw_200x200.jpg",
+      "avatar_color": "#95e1d3",
+      "banner_url": "https://pbs.twimg.com/profile_banners/3784131324/1658599777"
+    },
+    "replies": 3,
+    "retweets": 1,
+    "likes": 23,
+    "views": 456,
+    "color": "#95e1d3",
+    "twitter_card": "summary",
+    "lang": "en",
+    "source": "Twitter for Android",
+    "replying_to": "originaluser",
+    "replying_to_status": "1548602399862013950"
+  }
+}

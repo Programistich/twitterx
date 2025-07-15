@@ -1,0 +1,100 @@
+services:
+  twitter-db:
+    container_name: twitter-db
+    image: postgres:14
+    restart: always
+    networks:
+      twitter-net:
+    volumes:
+      - postgres-data:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+    ports:
+      - "127.0.0.1:5434:5432"
+
+  twitter:
+    container_name: twitter
+    build:
+      dockerfile: Dockerfile
+      context: ..
+    restart: always
+    networks:
+      twitter-net:
+    volumes:
+      - ./cookies.txt:/app/cookies.txt:Z
+    healthcheck:
+      test: yt-dlp --cookies /app/cookies.txt --simulate "https://www.youtube.com/watch?v=dQw4w9WgXcQ" || exit 1
+      interval: 60s
+      timeout: 10s
+      retries: 3
+      start_period: 30s
+    environment:
+      - JDBC_URL=jdbc:postgresql://twitter-db:5432/${POSTGRES_DB}
+      - TELEGRAM_BOT_TOKEN
+      - TELEGRAM_BOT_USERNAME
+      - POSTGRES_DB
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD
+      - NITTER_BASE_URL
+      - FX_BASE_URL
+      - SECURE_1PSID
+      - SECURE_1PSIDTS
+      - YT_DLP_EXECUTABLE_PATH
+    depends_on:
+      - twitter-db
+      - nitter
+
+  nitter:
+    image: zedeus/nitter:latest
+    container_name: nitter
+    ports:
+      - "127.0.0.1:8049:8049"
+    volumes:
+      - ./nitter.conf:/src/nitter.conf:Z,ro
+      - ./sessions.jsonl:/src/sessions.jsonl:Z
+    depends_on:
+      - nitter-redis
+    restart: unless-stopped
+    healthcheck:
+      test: wget -nv --tries=1 --spider http://127.0.0.1:8049/elonmusk/status/1944705383874146513 || exit 1
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    user: "998:998"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+      twitter-net:
+
+  nitter-redis:
+    image: redis:6-alpine
+    container_name: nitter-redis
+    command: redis-server --save 60 1 --loglevel warning
+    volumes:
+      - nitter-redis:/data
+    restart: unless-stopped
+    healthcheck:
+      test: redis-cli ping
+      interval: 30s
+      timeout: 5s
+      retries: 2
+    user: "999:1000"
+    read_only: true
+    security_opt:
+      - no-new-privileges:true
+    cap_drop:
+      - ALL
+    networks:
+       twitter-net:
+
+volumes:
+  postgres-data:
+  nitter-redis:
+
+networks:
+  twitter-net:

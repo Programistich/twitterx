@@ -1,0 +1,6 @@
+requests==2.32.4
+pyotp==2.9.0
+ntscraper==0.4.0
+gemini-webapi==1.14.2
+browser-cookie3==0.20.1
+loguru==0.7.3

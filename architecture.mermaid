@@ -1,0 +1,108 @@
+flowchart TD
+%% Зовнішні сервіси
+TG[Telegram Bot API]
+NITTER[Nitter Instance<br/>локальний екземпляр]
+TRANS[Translation Service<br/>deep-translator]
+
+    %% Основний додаток
+    subgraph "Application"
+        %% Точка входу
+        WEBHOOK[Telegram Webhook Controller]
+        
+        %% Chain of Responsibility для обробки повідомлень
+        subgraph "Message Processing Chain"
+            CHAIN_START[UpdateHandler Interface]
+            CMD_HANDLER[CommandHandler<br/>/start, /add, /remove, /list, /lang]
+            LINK_HANDLER[LinkHandler<br/>Twitter/Social Media Links]
+            INLINE_HANDLER[InlineQueryHandler<br/>Inline режим]
+            DEFAULT_HANDLER[DefaultHandler<br/>Інші повідомлення]
+            
+            CHAIN_START --> CMD_HANDLER
+            CMD_HANDLER --> LINK_HANDLER
+            LINK_HANDLER --> INLINE_HANDLER
+            INLINE_HANDLER --> DEFAULT_HANDLER
+        end
+        
+        %% Сервісний шар
+        subgraph "Service Layer"
+            USER_SERVICE[UserService<br/>Управління користувачами]
+            SUB_SERVICE[SubscriptionService<br/>Управління підписками]
+            TWEET_SERVICE[TweetService<br/>Обробка твітів]
+            MEDIA_SERVICE[MediaService<br/>yt-dlp інтеграція]
+            TRANS_SERVICE[TranslationService<br/>Переклад твітів]
+            NOTIFICATION_SERVICE[NotificationService<br/>Відправка повідомлень]
+        end
+        
+        %% Планувальник
+        SCHEDULER[Spring Scheduler<br/>@Scheduled кожні 5 хв]
+        
+        %% RSS Parser
+        RSS_PARSER[RSS Parser<br/>Nitter RSS обробка]
+        
+        %% Локалізація
+        I18N[Localization Service<br/>i18n підтримка]
+    end
+    
+    %% База даних
+    subgraph "PostgreSQL Database"
+        USERS_TABLE[(Users Table<br/>id, telegram_id, language, created_at)]
+        SUBSCRIPTIONS_TABLE[(Subscriptions Table<br/>id, user_id, twitter_username, created_at)]
+        TWEETS_TABLE[(Tweets Table<br/>id, tweet_id, username, content, media_urls, created_at)]
+    end
+    
+    %% Файлова система
+    FS[File System<br/>cookies, temp media]
+    
+    %% Логування
+    LOGGER[Application Logger<br/>Logback/SLF4J]
+    
+    %% Потоки даних
+    TG -->|Webhook| WEBHOOK
+    WEBHOOK --> CHAIN_START
+    
+    CMD_HANDLER --> USER_SERVICE
+    CMD_HANDLER --> SUB_SERVICE
+    CMD_HANDLER --> I18N
+    
+    LINK_HANDLER --> TWEET_SERVICE
+    LINK_HANDLER --> MEDIA_SERVICE
+    
+    INLINE_HANDLER --> TWEET_SERVICE
+    
+    USER_SERVICE --> USERS_TABLE
+    SUB_SERVICE --> SUBSCRIPTIONS_TABLE
+    SUB_SERVICE --> USERS_TABLE
+    TWEET_SERVICE --> TWEETS_TABLE
+    TWEET_SERVICE --> NITTER
+    TWEET_SERVICE --> TRANS_SERVICE
+    
+    MEDIA_SERVICE --> FS
+    MEDIA_SERVICE -->|yt-dlp| EXTERNAL_MEDIA[TikTok/YouTube/Instagram]
+    
+    TRANS_SERVICE --> TRANS
+    
+    NOTIFICATION_SERVICE --> TG
+    NOTIFICATION_SERVICE --> I18N
+    
+    %% Планувальник
+    SCHEDULER --> RSS_PARSER
+    RSS_PARSER --> NITTER
+    RSS_PARSER --> TWEET_SERVICE
+    TWEET_SERVICE --> NOTIFICATION_SERVICE
+    
+    %% Логування
+    WEBHOOK --> LOGGER
+    TWEET_SERVICE --> LOGGER
+    MEDIA_SERVICE --> LOGGER
+    RSS_PARSER --> LOGGER
+    
+    %% Стилізація
+    classDef external fill:#e1f5fe
+    classDef database fill:#f3e5f5
+    classDef service fill:#e8f5e8
+    classDef handler fill:#fff3e0
+    
+    class TG,NITTER,TRANS,EXTERNAL_MEDIA external
+    class USERS_TABLE,SUBSCRIPTIONS_TABLE,TWEETS_TABLE database
+    class USER_SERVICE,SUB_SERVICE,TWEET_SERVICE,MEDIA_SERVICE,TRANS_SERVICE,NOTIFICATION_SERVICE service
+    class CMD_HANDLER,LINK_HANDLER,INLINE_HANDLER,DEFAULT_HANDLER handler

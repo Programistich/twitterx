@@ -1,0 +1,52 @@
+{
+  "code": 200,
+  "message": "OK",
+  "tweet": {
+    "id": "1548602399862013960",
+    "url": "https://twitter.com/quoteuser/status/1548602399862013960",
+    "text": "This is a great insight! Adding my thoughts here. #tech",
+    "created_at": "Sun Jul 17 10:15:30 +0000 2022",
+    "created_timestamp": 1658052930,
+    "author": {
+      "name": "Quote User",
+      "screen_name": "quoteuser",
+      "avatar_url": "https://pbs.twimg.com/profile_images/1532100022648680450/2z6Ml6Qy_200x200.jpg",
+      "avatar_color": "#ff6b6b",
+      "banner_url": "https://pbs.twimg.com/profile_banners/3784131322/1658599775"
+    },
+    "replies": 5,
+    "retweets": 12,
+    "likes": 89,
+    "views": 1250,
+    "color": "#ff6b6b",
+    "twitter_card": "summary",
+    "lang": "en",
+    "source": "Twitter Web App",
+    "replying_to": null,
+    "replying_to_status": null,
+    "quote": {
+      "id": "1548602399862013950",
+      "url": "https://twitter.com/originaluser/status/1548602399862013950",
+      "text": "Just discovered an amazing new technology that will change everything! Can't wait to share more details soon. #innovation #technology",
+      "created_at": "Sun Jul 17 09:30:15 +0000 2022",
+      "created_timestamp": 1658051415,
+      "author": {
+        "name": "Original User",
+        "screen_name": "originaluser",
+        "avatar_url": "https://pbs.twimg.com/profile_images/1532100022648680451/3z6Ml6Qz_200x200.jpg",
+        "avatar_color": "#4ecdc4",
+        "banner_url": "https://pbs.twimg.com/profile_banners/3784131323/1658599776"
+      },
+      "replies": 15,
+      "retweets": 45,
+      "likes": 234,
+      "views": 3500,
+      "color": "#4ecdc4",
+      "twitter_card": "summary",
+      "lang": "en",
+      "source": "Twitter for iPhone",
+      "replying_to": null,
+      "replying_to_status": null
+    }
+  }
+}

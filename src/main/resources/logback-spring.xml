@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+    <include resource="org/springframework/boot/logging/logback/defaults.xml"/>
+    
+    <!-- Console Appender with Colors -->
+    <appender name="CONSOLE" class="ch.qos.logback.core.ConsoleAppender">
+        <encoder>
+            <pattern>%clr(%d{yyyy-MM-dd HH:mm:ss.SSS}){faint} %clr(${LOG_LEVEL_PATTERN:-%5p}) %clr(${PID:- }){magenta} %clr(---){faint} %clr([%15.15t]){faint} %clr(%-40.40logger{39}){cyan} %clr(:){faint} %m%n${LOG_EXCEPTION_CONVERSION_WORD:-%wEx}</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- File Appender -->
+    <appender name="FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/twitterx.log</file>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/twitterx.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>1GB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Error File Appender -->
+    <appender name="ERROR_FILE" class="ch.qos.logback.core.rolling.RollingFileAppender">
+        <file>logs/error.log</file>
+        <filter class="ch.qos.logback.classic.filter.ThresholdFilter">
+            <level>WARN</level>
+        </filter>
+        <rollingPolicy class="ch.qos.logback.core.rolling.TimeBasedRollingPolicy">
+            <fileNamePattern>logs/error.%d{yyyy-MM-dd}.log</fileNamePattern>
+            <maxHistory>30</maxHistory>
+            <totalSizeCap>500MB</totalSizeCap>
+        </rollingPolicy>
+        <encoder>
+            <pattern>%d{yyyy-MM-dd HH:mm:ss.SSS} [%thread] %-5level %logger{36} - %msg%n</pattern>
+            <charset>UTF-8</charset>
+        </encoder>
+    </appender>
+
+    <!-- Async Appender for better performance -->
+    <appender name="ASYNC_FILE" class="ch.qos.logback.classic.AsyncAppender">
+        <appender-ref ref="FILE"/>
+        <queueSize>512</queueSize>
+        <discardingThreshold>0</discardingThreshold>
+        <includeCallerData>false</includeCallerData>
+    </appender>
+
+    <!-- Module-specific loggers -->
+    <!-- Twitter module -->
+    <logger name="twitterx.twitter" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Translation module -->
+    <logger name="twitterx.translation" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Video module -->
+    <logger name="twitterx.video" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Article module -->
+    <logger name="twitterx.article" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Localization module -->
+    <logger name="twitterx.localization" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Telegram module -->
+    <logger name="twitterx.telegram" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- AI module -->
+    <logger name="twitterx.ai" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- Application module -->
+    <logger name="twitter.app" level="INFO" additivity="false">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </logger>
+
+    <!-- External library loggers -->
+    <logger name="io.ktor.client" level="INFO"/>
+    <logger name="org.springframework" level="WARN"/>
+    <logger name="org.telegram.telegrambots" level="INFO"/>
+    <logger name="org.hibernate" level="WARN"/>
+    <logger name="org.flywaydb" level="INFO"/>
+    <logger name="com.zaxxer.hikari" level="WARN"/>
+    <logger name="org.postgresql" level="WARN"/>
+
+    <!-- Profile-specific configurations -->
+    <springProfile name="dev">
+        <logger name="twitterx" level="DEBUG"/>
+        <logger name="root" level="INFO"/>
+    </springProfile>
+
+    <springProfile name="prod">
+        <logger name="twitterx" level="INFO"/>
+        <logger name="root" level="WARN"/>
+    </springProfile>
+
+    <!-- Default profile -->
+    <springProfile name="!dev & !prod">
+        <logger name="twitterx" level="INFO"/>
+        <logger name="root" level="INFO"/>
+    </springProfile>
+
+    <!-- Root logger -->
+    <root level="INFO">
+        <appender-ref ref="CONSOLE"/>
+        <appender-ref ref="ASYNC_FILE"/>
+        <appender-ref ref="ERROR_FILE"/>
+    </root>
+</configuration>

@@ -1,0 +1,55 @@
+{
+  "code": 200,
+  "message": "OK",
+  "tweet": {
+    "id": "1548602399862013955",
+    "url": "https://twitter.com/videouser/status/1548602399862013955",
+    "text": "Amazing video content! Check this out 🎥",
+    "created_at": "Sun Jul 17 11:35:58 +0000 2022",
+    "created_timestamp": 1658057758,
+    "author": {
+      "name": "Video Creator",
+      "screen_name": "videouser",
+      "avatar_url": "https://pbs.twimg.com/profile_images/1532100022648680450/2z6Ml6Qy_200x200.jpg",
+      "avatar_color": "#9c27b0",
+      "banner_url": "https://pbs.twimg.com/profile_banners/3784131322/1658599775"
+    },
+    "replies": 8,
+    "retweets": 20,
+    "likes": 50,
+    "views": 500,
+    "color": "#9c27b0",
+    "twitter_card": "player",
+    "lang": "en",
+    "source": "Twitter for Android",
+    "replying_to": null,
+    "replying_to_status": null,
+    "media": {
+      "videos": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/ext_tw_video/1548602342488129536/pu/vid/720x1280/I_D3svYfjBl7_xGS.mp4?tag=14",
+          "thumbnail_url": "https://pbs.twimg.com/ext_tw_video_thumb/1548602342488129536/pu/img/V_1u5Nv5BwKBynwv.jpg",
+          "width": 720,
+          "height": 1280,
+          "duration": 25.133,
+          "format": "video/mp4"
+        }
+      ],
+      "all": [
+        {
+          "type": "video",
+          "url": "https://video.twimg.com/ext_tw_video/1548602342488129536/pu/vid/720x1280/I_D3svYfjBl7_xGS.mp4?tag=14",
+          "width": 720,
+          "height": 1280,
+          "thumbnail_url": "https://pbs.twimg.com/ext_tw_video_thumb/1548602342488129536/pu/img/V_1u5Nv5BwKBynwv.jpg",
+          "duration": 25.133,
+          "format": "video/mp4"
+        }
+      ]
+    },
+    "quote": null,
+    "poll": null,
+    "translation": null
+  }
+}

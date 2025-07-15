@@ -1,0 +1,1 @@
+ALTER TABLE telegram_chat ADD COLUMN is_elon_musk BOOLEAN NOT NULL DEFAULT FALSE;

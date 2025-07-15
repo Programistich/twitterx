@@ -1,0 +1,91 @@
+{
+  "start": {
+    "welcome": "Hello! I am a bot that will help you read Twitter without leaving Telegram!",
+    "instructions": "Use /add @username to subscribe to a Twitter account, /list to see your subscriptions, and /lang to change language."
+  },
+  "add": {
+    "success": "Successfully subscribed to @{username}! You will now receive new tweets from this account.",
+    "already_exists": "You are already subscribed to @{username}.",
+    "user_not_found": "Twitter user @{username} not found. Please check the username and try again.",
+    "invalid_username": "Invalid username format. Please use @username format.",
+    "error": "Failed to add subscription. Please try again later."
+  },
+  "remove": {
+    "success": "Successfully unsubscribed from @{username}.",
+    "not_found": "You are not subscribed to @{username}.",
+    "error": "Failed to remove subscription. Please try again later."
+  },
+  "list": {
+    "title": "Your subscriptions:",
+    "empty": "You have no active subscriptions. Use /add @username to subscribe to a Twitter account.",
+    "error": "Failed to load subscriptions. Please try again later."
+  },
+  "lang": {
+    "title": "Select your language:",
+    "selected": "Language changed to English.",
+    "error": "Failed to change language. Please try again later.",
+    "english": "🇬🇧 English",
+    "ukrainian": "🇺🇦 Ukrainian",
+    "russian": "🇷🇺 Russian"
+  },
+  "ai": {
+    "response": "🤖 AI Response:",
+    "error": "Failed to generate AI response. Please try again later.",
+    "unavailable": "AI service is currently unavailable. Please try again later.",
+    "processing": "🤖 Processing your request..."
+  },
+  "tweet": {
+    "from": "<a href='{url}'>Tweet</a> from <a href='{userUrl}'>{username}</a>",
+    "retweet_by": "<a href='{tweetUrl}'>Retweet</a> <a href='{retweeterUrl}'>{retweeter}</a> at <a href='{userUrl}'>{username}</a>",
+    "original": "[EN] {text}",
+    "translated": "[{language}] {text}",
+    "error": "Failed to load tweet. The tweet may be private or deleted."
+  },
+  "video": {
+    "downloading": "Downloading video...",
+    "success": "Video downloaded successfully!",
+    "error": "Failed to download video. Please try again later.",
+    "unsupported": "Video platform not supported. Supported platforms: TikTok, Instagram Reels, YouTube Shorts.",
+    "too_large": "Video file is too large to send via Telegram.",
+    "processing": "🎬 Processing video...",
+    "download_error": "Failed to download video. Please try again later.",
+    "file_too_large": "Video file is too large to send via Telegram (max 50MB).",
+    "processing_timeout": "Video processing timed out. Please try again with a shorter video.",
+    "unsupported_url": "Video URL not supported. Supported platforms: TikTok, Instagram Reels, YouTube Shorts.",
+    "caption": "📹 {title}\n🎥 From {platform}"
+  },
+  "inline": {
+    "no_results": "No results found for this tweet URL.",
+    "error": "Failed to process inline query. Please try again."
+  },
+  "link": {
+    "processing": "Processing tweet...",
+    "subscribe_prompt": "Would you like to subscribe to @{username}?",
+    "error": "Failed to process link. Please check the URL and try again."
+  },
+  "error": {
+    "unknown": "An unknown error occurred. Please try again later.",
+    "api_fail": "Twitter API is currently unavailable. Please try again later.",
+    "network": "Network error. Please check your connection and try again.",
+    "rate_limit": "Rate limit exceeded. Please try again in a few minutes."
+  },
+  "button": {
+    "yes": "Yes",
+    "no": "No",
+    "subscribe": "Subscribe",
+    "cancel": "Cancel"
+  },
+  "validation": {
+    "required": "This field is required.",
+    "invalid_format": "Invalid format.",
+    "too_long": "Text is too long."
+  },
+  "service": {
+    "unavailable": "Service is temporarily unavailable. Please try again later.",
+    "maintenance": "Service is under maintenance. Please try again later."
+  },
+  "elonmusk": {
+    "subscribed": "✅ You are now subscribed to Elon Musk's tweets! You will receive new tweets from elonmusk.",
+    "unsubscribed": "❌ You have unsubscribed from Elon Musk's tweets. You will no longer receive tweets from elonmusk."
+  }
+}
