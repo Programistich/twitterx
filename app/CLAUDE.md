@@ -13,7 +13,25 @@ The `app` module is the central application that:
 
 
 ## Key Features
-If result not successful, send error message to user use reply 
+
+### Tweet Message Formatting
+The application implements a comprehensive tweet formatting system with the following features:
+
+- **Header-First Layout**: All tweets display headers (with user info and links) at the top, followed by content
+- **HTML Link Hiding**: Tweet URLs and user profile URLs are hidden using `<a>` tags for clean display
+- **Username Normalization**: "@" symbols are automatically removed from usernames in display
+- **Multi-language Support**: Automatic translation with language indicators (e.g., [UK], [EN])
+- **Article Creation**: Long content automatically creates Telegraph articles to handle Telegram's message limits
+- **Media Handling**: Supports photos, videos, and media groups with appropriate captions
+
+### Message Structure
+All tweet messages follow this consistent structure:
+1. **Header**: Clickable links to tweet and user profile
+2. **Content**: Translated content (if applicable) followed by original content
+3. **Media**: Photos/videos attached separately
+
+### Error Handling
+If result not successful, send error message to user using reply 
 
 ## Architecture
 
@@ -74,6 +92,8 @@ Handles the `/start` command for welcoming new users:
 Handles tweet link processing and formatting:
 
 - **TweetMessageExecutor**: Processes messages containing Twitter links and formats them for display
+- **TweetSender**: Core service for formatting and sending tweets with proper structure and localization
+- **ElonMuskMonitoringService**: Monitors specific accounts for new tweets and sends them to subscribers
 
 ### Data Persistence
 
@@ -209,9 +229,67 @@ class SpringBootConfig {
 ### Environment Variables
 Required environment variables:
 - `TELEGRAM_BOT_TOKEN` - Telegram Bot API token
-- `TELEGRAM_BOT_USERNAME` - Telegram bot username
+- `TELEGRAM_BOT_USERNAME` - Telegram bot username  
 - `DB_USERNAME` - Database username
 - `DB_PASSWORD` - Database password
+
+## Tweet Formatting Implementation
+
+### TweetSender Service
+The `TweetSender` class is the core service responsible for formatting and sending tweets. Key features:
+
+#### Message Formatting
+- **Header Generation**: Uses localization service to create headers with hidden HTML links
+- **Content Translation**: Integrates with translation service for multi-language support
+- **Article Creation**: Automatically creates Telegraph articles for content exceeding Telegram limits
+- **Media Processing**: Handles photos, videos, and media groups with proper captions
+
+#### Tweet Types Support
+- **Single Tweets**: Standard tweets with header, content, and optional media
+- **Reply Threads**: Sends each tweet in sequence as replies to previous messages
+- **Quote Tweets**: Sends original tweet first, then the quoting tweet
+- **Retweets**: Special formatting showing retweeter info and original tweet link
+
+#### Content Length Handling
+- **Regular Messages**: Up to 4096 characters
+- **Media Captions**: Up to 1024 characters  
+- **Article Fallback**: Creates Telegraph articles for longer content
+- **Header Exclusion**: When creating articles for media tweets, headers are excluded from article content
+
+### Message Structure Examples
+
+#### Single Tweet
+```
+Tweet from username
+
+[UK] Переклад українською
+
+[EN] Original English content
+```
+
+#### Retweet
+```
+Retweet username from tweet by originaluser
+
+[UK] Переклад контенту
+
+[EN] Original content
+```
+
+#### Media Tweet with Long Caption
+```
+Tweet from username
+
+[Photo/Video attached]
+
+https://telegra.ph/Tweet-01-15
+```
+
+### Localization Integration
+All tweet headers and retweet messages use localized templates with hidden HTML links:
+- `tweet.from` - Main tweet header template
+- `tweet.retweet_by` - Retweet header template
+- Templates support parameters for username, URLs, and tweet links
 
 ## Development Guidelines
 

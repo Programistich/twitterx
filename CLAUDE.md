@@ -6,18 +6,6 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 TwitterX is a Telegram bot that provides comprehensive Twitter interaction capabilities without leaving Telegram. The project implements a modular architecture with clean separation of concerns across multiple specialized modules.
 
-### Current Implementation Status
-- **✅ Core Twitter Integration**: FxTwitter API + Nitter RSS for tweet fetching and user timelines
-- **✅ Multi-language Support**: Complete localization system (EN/UK/RU)
-- **✅ Translation Services**: Google Translate integration for tweet content
-- **✅ Video Processing**: yt-dlp integration for social media video downloads
-- **✅ Article Creation**: Telegraph integration for long content publishing
-- **✅ AI Capabilities**: Google Gemini integration via Python subprocess
-- **✅ Telegram Bot Framework**: Complete command/callback/inline processing system
-- **❌ Subscription Management**: Commands `/add`, `/remove`, `/list` - not implemented
-- **❌ Automatic Tweet Monitoring**: Scheduled RSS polling every 5 minutes - not implemented
-- **❌ Inline Query Mode**: Tweet sharing via inline queries - not implemented
-
 ### Key References
 - **@TASK.md** - Complete requirements and user stories
 - **@architecture.mermaid** - System architecture diagram
