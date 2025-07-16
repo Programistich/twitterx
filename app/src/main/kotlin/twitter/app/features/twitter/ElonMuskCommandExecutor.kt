@@ -1,4 +1,4 @@
-package twitter.app.features.elonmusk
+package twitter.app.features.twitter
 
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component

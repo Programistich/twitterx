@@ -12,7 +12,7 @@ import org.springframework.context.annotation.Bean
 import org.springframework.context.annotation.Primary
 import org.springframework.test.context.ActiveProfiles
 import org.springframework.transaction.annotation.Transactional
-import twitter.app.features.elonmusk.ElonMuskCommandExecutor
+import twitter.app.features.twitter.ElonMuskCommandExecutor
 import twitter.app.features.twitter.ElonMuskMonitoringService
 import twitter.app.repo.SentTweetRepository
 import twitter.app.repo.TelegramChat

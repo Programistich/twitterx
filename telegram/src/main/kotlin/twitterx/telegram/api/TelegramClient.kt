@@ -1,5 +1,6 @@
 package twitterx.telegram.api
 
+import twitterx.telegram.api.models.inline.InlineQueryResult
 import twitterx.telegram.api.models.keyboard.InlineKeyboardMarkup
 import twitterx.telegram.api.models.response.TelegramMessage
 import java.io.File
@@ -63,6 +64,14 @@ public interface TelegramClient {
     public suspend fun sendChatAction(
         chatId: Long,
         action: TelegramAction
+    ): Result<Boolean>
+
+    public suspend fun answerInlineQuery(
+        inlineQueryId: String,
+        results: List<InlineQueryResult>,
+        cacheTime: Int? = null,
+        isPersonal: Boolean? = null,
+        nextOffset: String? = null
     ): Result<Boolean>
 }
 

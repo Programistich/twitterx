@@ -3,6 +3,7 @@ package twitter.app.telegram
 import kotlinx.coroutines.future.await
 import org.slf4j.LoggerFactory
 import org.telegram.telegrambots.client.okhttp.OkHttpTelegramClient
+import org.telegram.telegrambots.meta.api.methods.AnswerInlineQuery
 import org.telegram.telegrambots.meta.api.methods.send.SendChatAction
 import org.telegram.telegrambots.meta.api.methods.send.SendMediaGroup
 import org.telegram.telegrambots.meta.api.methods.send.SendMessage
@@ -11,12 +12,16 @@ import org.telegram.telegrambots.meta.api.methods.send.SendVideo
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.DeleteMessage
 import org.telegram.telegrambots.meta.api.methods.updatingmessages.EditMessageText
 import org.telegram.telegrambots.meta.api.objects.InputFile
+import org.telegram.telegrambots.meta.api.objects.inlinequery.inputmessagecontent.InputTextMessageContent
+import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultArticle
+import org.telegram.telegrambots.meta.api.objects.inlinequery.result.InlineQueryResultPhoto
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaPhoto
 import org.telegram.telegrambots.meta.api.objects.media.InputMediaVideo
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardButton
 import org.telegram.telegrambots.meta.api.objects.replykeyboard.buttons.InlineKeyboardRow
 import twitterx.telegram.api.TelegramAction
 import twitterx.telegram.api.TelegramClient
+import twitterx.telegram.api.models.inline.InlineQueryResult
 import twitterx.telegram.api.models.keyboard.InlineKeyboardMarkup
 import twitterx.telegram.api.models.response.TelegramChat
 import twitterx.telegram.api.models.response.TelegramMessage
@@ -200,6 +205,73 @@ public class TelegramClientImpl(
         telegramClient.executeAsync(chatAction).await()
     }.onFailure { error ->
         logger.error("Failed to send chat action '$action' to chat $chatId", error)
+    }
+
+    override suspend fun answerInlineQuery(
+        inlineQueryId: String,
+        results: List<InlineQueryResult>,
+        cacheTime: Int?,
+        isPersonal: Boolean?,
+        nextOffset: String?
+    ): Result<Boolean> = runCatching {
+        val telegramResults = results.map { result ->
+            when (result) {
+                is twitterx.telegram.api.models.inline.InlineQueryResultArticle -> {
+                    val inputContent = result.inputMessageContent as twitterx.telegram.api.models.inline.InputTextMessageContent
+                    InlineQueryResultArticle.builder()
+                        .id(result.id)
+                        .title(result.title)
+                        .inputMessageContent(
+                            InputTextMessageContent.builder()
+                                .messageText(inputContent.messageText)
+                                .parseMode(inputContent.parseMode)
+                                .disableWebPagePreview(inputContent.disableWebPagePreview)
+                                .build()
+                        )
+                        .description(result.description)
+                        .thumbnailUrl(result.thumbUrl)
+                        .thumbnailWidth(result.thumbWidth)
+                        .thumbnailHeight(result.thumbHeight)
+                        .build()
+                }
+                is twitterx.telegram.api.models.inline.InlineQueryResultPhoto -> {
+                    val photoBuilder = InlineQueryResultPhoto.builder()
+                        .id(result.id)
+                        .photoUrl(result.photoUrl)
+                        .thumbnailUrl(result.thumbUrl)
+                        .photoWidth(result.photoWidth)
+                        .photoHeight(result.photoHeight)
+                        .title(result.title)
+                        .description(result.description)
+                        .caption(result.caption)
+                        .parseMode(result.parseMode)
+                    
+                    if (result.inputMessageContent != null) {
+                        val inputContent = result.inputMessageContent as twitterx.telegram.api.models.inline.InputTextMessageContent
+                        photoBuilder.inputMessageContent(
+                            InputTextMessageContent.builder()
+                                .messageText(inputContent.messageText)
+                                .parseMode(inputContent.parseMode)
+                                .disableWebPagePreview(inputContent.disableWebPagePreview)
+                                .build()
+                        )
+                    }
+                    
+                    photoBuilder.build()
+                }
+                else -> throw IllegalArgumentException("Unsupported inline query result type")
+            }
+        }
+
+        val answerInlineQuery = AnswerInlineQuery(inlineQueryId, telegramResults).apply {
+            this.cacheTime = cacheTime
+            this.isPersonal = isPersonal
+            this.nextOffset = nextOffset
+        }
+
+        telegramClient.executeAsync(answerInlineQuery).await()
+    }.onFailure { error ->
+        logger.error("Failed to answer inline query $inlineQueryId", error)
     }
 
     /**

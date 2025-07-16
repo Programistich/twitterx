@@ -6,6 +6,7 @@ import io.mockk.mockk
 import kotlinx.coroutines.test.runTest
 import org.junit.jupiter.api.BeforeEach
 import org.junit.jupiter.api.Test
+import twitter.app.features.twitter.ElonMuskCommandExecutor
 import twitter.app.repo.TelegramChat
 import twitter.app.repo.TelegramChatRepository
 import twitterx.localization.api.LocalizationService
