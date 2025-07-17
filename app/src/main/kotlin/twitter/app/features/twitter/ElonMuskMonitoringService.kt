@@ -16,6 +16,7 @@ import twitter.app.repo.TelegramChatRepository
 import twitter.app.repo.TweetTracking
 import twitter.app.repo.TweetTrackingRepository
 import twitterx.twitter.api.Tweet
+import twitterx.twitter.api.TweetsThread
 import twitterx.twitter.api.TwitterService
 import java.time.LocalDateTime
 
@@ -150,10 +151,30 @@ public open class ElonMuskMonitoringService(
                 return
             }
 
+            // Check if this is a reply and if the parent tweet exists in the database
+            val replyToMessageId = if (tweetsThread is TweetsThread.Reply) {
+                val parentTweetId = tweet.replyToTweetId
+                if (parentTweetId != null) {
+                    val parentTweet = sentTweetRepository.findByTweetIdAndChatId(parentTweetId, subscriber.id)
+                    if (parentTweet != null) {
+                        logger.debug("Found parent tweet $parentTweetId for reply ${tweet.id}, using message ID ${parentTweet.messageId}")
+                        parentTweet.messageId
+                    } else {
+                        logger.debug("Parent tweet $parentTweetId not found for reply ${tweet.id}")
+                        null
+                    }
+                } else {
+                    null
+                }
+            } else {
+                null
+            }
+
             val messageId = tweetSender.sendTweetThread(
                 tweetsThread,
                 subscriber.id,
-                subscriber.language
+                subscriber.language,
+                replyToMessageId
             )
 
             if (messageId != null) {
