@@ -1,5 +1,6 @@
 package twitter.app.features.twitter
 
+import kotlinx.coroutines.delay
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Component
 import twitterx.article.api.ArticleService
@@ -275,6 +276,7 @@ public class TweetSender(
         message: String,
         replyToMessageId: Long?
     ): Long? {
+        delay(1000) // 1 second delay before sending
         val result = telegramClient.sendMessage(
             chatId,
             message,
@@ -304,6 +306,7 @@ public class TweetSender(
         }
 
         telegramClient.sendChatAction(chatId, TelegramAction.UPLOAD_PHOTO)
+        delay(1000) // 1 second delay before sending
         val result = telegramClient.sendMediaGroup(
             chatId,
             tweet.mediaUrls,
@@ -329,6 +332,7 @@ public class TweetSender(
     ): Long? {
         if (mediaUrls.size == 1) {
             telegramClient.sendChatAction(chatId, TelegramAction.UPLOAD_PHOTO)
+            delay(1000) // 1 second delay before sending
             val result = telegramClient.sendPhoto(
                 chatId,
                 mediaUrls.first(),
@@ -345,6 +349,7 @@ public class TweetSender(
             }
         } else {
             telegramClient.sendChatAction(chatId, TelegramAction.UPLOAD_PHOTO)
+            delay(1000) // 1 second delay before sending
             val result = telegramClient.sendMediaGroup(
                 chatId,
                 mediaUrls,
@@ -371,6 +376,7 @@ public class TweetSender(
     ): Long? {
         if (videoUrls.size == 1) {
             telegramClient.sendChatAction(chatId, TelegramAction.UPLOAD_VIDEO)
+            delay(1000) // 1 second delay before sending
             val result = telegramClient.sendVideo(
                 chatId,
                 videoUrls.first(),
@@ -387,6 +393,7 @@ public class TweetSender(
             }
         } else {
             telegramClient.sendChatAction(chatId, TelegramAction.UPLOAD_VIDEO)
+            delay(1000) // 1 second delay before sending
             val result = telegramClient.sendMediaGroup(
                 chatId,
                 listOf(),

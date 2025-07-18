@@ -66,7 +66,7 @@ Handles video downloading from social networks. See **@video/CLAUDE.md** for det
 Create articles from text. See **@article/CLAUDE.md** for details.
 
 - **`article:api`** - Core interfaces and models for article creation
-- **`article:telegraph`** - Implementation using https://telegra.ph/ for article creation
+- **`article:telegraph`** - Implementation using https://telegre.ph/ for article creation
 - **`article:e2e`** - End-to-end tests with real article creation
 
 ### Localization Module (`localization/`)
@@ -150,3 +150,6 @@ For example, to find the latest version of `ktor-client-core`, use:
 ```
 /mcp__context7__resolveLibraryId ktor-client-core
 ```
+
+## Development Memories
+- Add env variables to docker compose files
