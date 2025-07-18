@@ -18,6 +18,7 @@ include(":twitter:e2e")
 
 include(":translations:api")
 include(":translations:google")
+include(":translations:qween")
 include(":translations:e2e")
 
 include(":video:api")

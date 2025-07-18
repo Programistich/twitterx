@@ -11,6 +11,7 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.context.annotation.Bean
 import org.springframework.stereotype.Component
 import twitter.app.telegram.TelegramClientImpl
+import twitter.translations.qween.QwenTranslationService
 import twitterx.article.api.ArticleService
 import twitterx.article.telegraph.TelegraphService
 import twitterx.localization.api.LocalizationService
@@ -21,7 +22,6 @@ import twitterx.telegram.api.executors.Executor
 import twitterx.telegram.api.models.TelegramConfig
 import twitterx.telegram.api.updates.TelegramUpdate
 import twitterx.translation.api.TranslationService
-import twitterx.translation.impl.GoogleTranslationService
 import twitterx.twitter.api.TwitterService
 import twitterx.twitter.fx.FxTwitterService
 import twitterx.twitter.impl.TwitterServiceImpl
@@ -103,9 +103,11 @@ public object SpringBootConfig {
 
     @Bean
     public fun translationService(
-        httpClient: HttpClient
+        httpClient: HttpClient,
+        @Value("\${open.router.api.key}") apiKey: String,
     ): TranslationService {
-        return GoogleTranslationService(httpClient)
+        // return GoogleTranslationService(httpClient)
+        return QwenTranslationService(httpClient, apiKey)
     }
 
     @Bean

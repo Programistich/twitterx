@@ -245,7 +245,7 @@ public class TelegramClientImpl(
                         .description(result.description)
                         .caption(result.caption)
                         .parseMode(result.parseMode)
-                    
+
                     if (result.inputMessageContent != null) {
                         val inputContent = result.inputMessageContent as twitterx.telegram.api.models.inline.InputTextMessageContent
                         photoBuilder.inputMessageContent(
@@ -256,7 +256,7 @@ public class TelegramClientImpl(
                                 .build()
                         )
                     }
-                    
+
                     photoBuilder.build()
                 }
                 else -> throw IllegalArgumentException("Unsupported inline query result type")

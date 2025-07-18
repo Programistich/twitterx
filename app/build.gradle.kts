@@ -25,6 +25,7 @@ dependencies {
 
     implementation(projects.translations.api)
     implementation(projects.translations.google)
+    implementation(projects.translations.qween)
 
     implementation(projects.twitter.api)
     implementation(projects.twitter.impl)

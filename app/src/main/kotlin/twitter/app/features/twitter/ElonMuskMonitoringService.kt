@@ -157,7 +157,9 @@ public open class ElonMuskMonitoringService(
                 if (parentTweetId != null) {
                     val parentTweet = sentTweetRepository.findByTweetIdAndChatId(parentTweetId, subscriber.id)
                     if (parentTweet != null) {
-                        logger.debug("Found parent tweet $parentTweetId for reply ${tweet.id}, using message ID ${parentTweet.messageId}")
+                        logger.debug(
+                            "Found parent tweet $parentTweetId for reply ${tweet.id}, using message ID ${parentTweet.messageId}"
+                        )
                         parentTweet.messageId
                     } else {
                         logger.debug("Parent tweet $parentTweetId not found for reply ${tweet.id}")
