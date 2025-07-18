@@ -42,6 +42,7 @@ services:
       - SECURE_1PSID
       - SECURE_1PSIDTS
       - YT_DLP_EXECUTABLE_PATH
+      - OPEN_ROUTER_API_KEY
     depends_on:
       - twitter-db
       - nitter
