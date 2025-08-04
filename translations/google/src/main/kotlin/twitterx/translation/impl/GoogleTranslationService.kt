@@ -2,7 +2,12 @@ package twitterx.translation.impl
 
 import io.ktor.client.HttpClient
 import io.ktor.client.call.body
-import io.ktor.client.request.get
+import io.ktor.client.request.forms.FormDataContent
+import io.ktor.client.request.post
+import io.ktor.client.request.setBody
+import io.ktor.http.ContentType
+import io.ktor.http.Parameters
+import io.ktor.http.contentType
 import org.slf4j.Logger
 import org.slf4j.LoggerFactory
 import twitterx.translation.api.Language
@@ -21,32 +26,55 @@ public class GoogleTranslationService(
         text: String,
         to: Language,
     ): Result<Translation> = runCatching {
-        logger.debug("Starting translation request: text length={}, target language={}", text.length, to.iso)
+        logger.debug(
+            "Starting translation request: text length={}, target language={}",
+            text.length,
+            to.iso
+        )
 
-        val response = httpClient.get(BASE_URL) {
-            url {
-                parameters.append("client", "gtx")
-                parameters.append("sl", "auto") // Automatically detect source language
-                parameters.append("tl", to.iso)
-                parameters.append("dt", "t")
-                parameters.append("dt", "bd")
-                parameters.append("dj", "1")
-                parameters.append("q", text)
-            }
+        val response = httpClient.post(BASE_URL) {
+            contentType(ContentType.Application.FormUrlEncoded)
+            setBody(
+                FormDataContent(
+                    Parameters.build {
+                        append("client", "it")
+                        append("dt", "qca")
+                        append("dt", "t")
+                        append("dt", "rmt")
+                        append("dt", "bd")
+                        append("dt", "rms")
+                        append("dt", "sos")
+                        append("dt", "md")
+                        append("dt", "gt")
+                        append("dt", "ld")
+                        append("dt", "ss")
+                        append("dt", "ex")
+                        append("otf", "2")
+                        append("dj", "1")
+                        append("hl", "en")
+                        append("ie", "UTF-8")
+                        append("oe", "UTF-8")
+                        append("sl", "auto")
+                        append("tl", to.iso)
+                        append("q", text)
+                    }
+                )
+            )
         }.body<GoogleTranslateResponse>()
 
-        val text = response.sentences.joinToString("") { it.text }
+        val translatedText = response.sentences.joinToString("") { it.text }
         val translation = Translation(
             from = response.src,
             to = to,
-            text = text
+            text = translatedText
         )
 
         logger.info("Translation completed successfully: {} -> {}", response.src, to.iso)
-        logger.debug("Translation result: original length={}, translated length={}", text.length, text)
-
-        return Result.success(translation)
-    }.onFailure { exception ->
-        logger.error("Translation failed: text length={}, target language={}", text.length, to.iso, exception)
+        logger.debug(
+            "Translation result: original length={}, translated length={}",
+            text.length,
+            translatedText.length
+        )
+        translation
     }
 }
