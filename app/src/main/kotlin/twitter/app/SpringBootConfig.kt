@@ -112,7 +112,7 @@ public object SpringBootConfig {
         httpClient: HttpClient,
         @Value("\${open.router.api.key}") apiKey: String,
     ): TranslationService {
-         return GoogleTranslationService(httpClient)
+        return GoogleTranslationService(httpClient)
 //        return QwenTranslationService(httpClient, apiKey)
 //        return LibreTranslateService(httpClient)
     }
