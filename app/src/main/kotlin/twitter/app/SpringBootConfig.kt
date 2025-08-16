@@ -22,7 +22,7 @@ import twitterx.telegram.api.executors.Executor
 import twitterx.telegram.api.models.TelegramConfig
 import twitterx.telegram.api.updates.TelegramUpdate
 import twitterx.translation.api.TranslationService
-import twitterx.translation.impl.GoogleTranslationService
+import twitterx.translation.openai.OpenAITranslationService
 import twitterx.twitter.api.TwitterService
 import twitterx.twitter.fx.FxTwitterService
 import twitterx.twitter.impl.TwitterServiceImpl
@@ -110,9 +110,10 @@ public object SpringBootConfig {
     @Bean
     public fun translationService(
         httpClient: HttpClient,
-        @Value("\${open.router.api.key}") apiKey: String,
+        @Value("\${open.ai.api.key}") apiKey: String,
     ): TranslationService {
-        return GoogleTranslationService(httpClient)
+        return OpenAITranslationService(httpClient, apiKey)
+//        return GoogleTranslationService(httpClient)
 //        return QwenTranslationService(httpClient, apiKey)
 //        return LibreTranslateService(httpClient)
     }

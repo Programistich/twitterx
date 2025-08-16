@@ -44,6 +44,7 @@ services:
       - YT_DLP_EXECUTABLE_PATH
       - YT_DLP_COOKIES_FILE
       - OPEN_ROUTER_API_KEY
+      - OPEN_AI_API_KEY
     depends_on:
       - twitter-db
       - nitter

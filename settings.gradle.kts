@@ -20,6 +20,7 @@ include(":translations:api")
 include(":translations:google")
 include(":translations:qween")
 include(":translations:libre")
+include(":translations:openai")
 include(":translations:e2e")
 
 include(":video:api")
