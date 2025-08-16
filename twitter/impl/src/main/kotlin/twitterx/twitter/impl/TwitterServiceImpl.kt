@@ -147,7 +147,7 @@ public class TwitterServiceImpl(
         logger.debug("Getting tweet thread: username={}, tweetId={}", username, tweetId)
 
         val tweet = tweetProvider.getTweet(tweetId).getOrThrow()
-        if (tweet.username.lowercase() != username) {
+        if (tweet.username.lowercase() != username.lowercase()) {
             logger.info(
                 "Tweet is a retweet: originalAuthor={}, retweetedBy={}, tweetId={}",
                 tweet.username,
